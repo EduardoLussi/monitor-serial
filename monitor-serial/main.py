@@ -20,7 +20,7 @@ def serial_write(con, command):
     mutex = Lock()
     mutex.acquire()
     try:
-        con.write(bytes(command))
+        con.write(bytes(command, "utf-8"))
     except Exception as err:
         print(err)
         popupmsg(f"Couldn't send the message")
@@ -43,7 +43,16 @@ def serial_read(con, flag, showTime, txt):
         mutex.acquire()
         while i < len(pdu):
 
-            read = con.read(con.in_waiting)
+            bytesToRead = int(con.inWaiting())
+            while bytesToRead == 0:
+                bytesToRead = int(con.inWaiting())
+
+            read = con.read(bytesToRead)
+
+            try:
+                read = read.decode('utf-8')
+            except Exception as err:
+                print(err)
 
             attributes.append('data')
             values.append(str(datetime.datetime.today())[:19])
