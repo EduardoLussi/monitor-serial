@@ -1,5 +1,4 @@
 import serial
-from pdu import *
 import datetime
 from tkinter import *
 from threading import Lock
@@ -33,46 +32,30 @@ def serial_read(con, flag, showTime, txt):
     mutex = Lock()
 
     while flag:
-        attributes = []
-        values = []
-
-        pdu = PDU_DEFAULT['attribute']
-
-        i = 0
-
         mutex.acquire()
-        while i < len(pdu):
 
+        bytesToRead = int(con.inWaiting())
+        while bytesToRead == 0:
             bytesToRead = int(con.inWaiting())
-            while bytesToRead == 0:
-                bytesToRead = int(con.inWaiting())
 
-            read = con.read(bytesToRead)
+        read = con.read(bytesToRead)
 
-            try:
-                read = read.decode('utf-8')
-            except Exception as err:
-                print(err)
+        try:
+            read = read.decode('utf-8').rstrip('\n')
+        except Exception as err:
+            print(err)
 
-            attributes.append('data')
-            values.append(str(datetime.datetime.today())[:19])
-
-            attributes.append(pdu[i])  # tag
-            values.append(read)
-            i += 1
         mutex.release()
 
+        insert = ''
+        if showTime:
+            insert += (str(datetime.datetime.today())[:19]) + ' -> ' + read
+        else:
+            insert += read
+
         txt.config(state="normal")
-        for i, attribute in enumerate(attributes):
-
-            if attribute == 'data':
-                if showTime:
-                    txt.insert(END, f"{values[i]} -> ")
-            else:
-                txt.insert(END, f"{values[i]}\n")
-
-            txt.see("end")
-
+        txt.insert(END, insert)
+        txt.see("end")
         txt.config(state=DISABLED)
 
     return True

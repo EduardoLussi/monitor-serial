@@ -6,7 +6,7 @@ import serial
 
 class TkSerial:
     # PORTA PROVISÓRIA SERÁ REMOVIDA APÓS A DETECÇÃO AUTOMÁTICA FUNCIONAR
-    def __init__(self, root, number, portaProvisoria):
+    def __init__(self, root, number, portaProvisoria=''):
 
         self.serialPort = SerialPort(portaProvisoria)
 
@@ -142,9 +142,7 @@ class TkSerial:
     def connect(self):
         # NÃO PERMITE CRIAR UMA NOVA CONEXÃO SE A CONEXÃO ATUAL ESTIVER ATIVA
         if self.optVarPort.get() != self.serialPort.port or not self.serialConnection.is_open:
-            # CONDIÇÃO SÓ EXISTE PARA MANTER CONFIGURAÇÃO MANUAL DA PORTA
-            if self.optVarPort.get() != '-':
-                self.serialPort.port = self.optVarPort.get()
+            self.serialPort.port = self.optVarPort.get()
 
             try:
                 self.serialConnection = serial.Serial(self.serialPort.port, int(self.optVarRate.get()))
@@ -155,8 +153,9 @@ class TkSerial:
                 self.btnSerial['bg'] = '#B8F8BE'
                 self.serialPort.flag = False
                 self.btnUpload.config(state=DISABLED)
-
-                popupmsg(f"Couldn't connect to port {self.serialPort.port}")
+                p = self.serialPort.port
+                self.serialPort.port = ''
+                popupmsg(f"Couldn't connect to port {p}")
 
                 return False
 
@@ -221,11 +220,9 @@ class Border:
 class Screen:
 
         def __init__(self, root):
-
-            # TERCEIRO ARGUMENTO = PORT, SE A DETECÇÃO AUTOMÁTICA NÃO ESTIVER FUNCIONANDO
-            self.serial0 = TkSerial(root, '0', '/dev/ttyACM0')
-            self.serial1 = TkSerial(root, '1', '/dev/ttyACM0')
-            self.serial2 = TkSerial(root, '2', '/dev/ttyACM0')
+            self.serial0 = TkSerial(root, '0')
+            self.serial1 = TkSerial(root, '1')
+            self.serial2 = TkSerial(root, '2')
 
             self.border01 = Border(root)
             self.border12 = Border(root)
