@@ -2,6 +2,7 @@ from main import *
 import threading
 from serialPort import SerialPort
 import serial
+from tkinter import *
 
 
 class TkSerial:
@@ -241,4 +242,5 @@ if __name__ == '__main__':
     screen.geometry("1280x720+100+50")
     screen['bg'] = "white"
     screen.resizable(False, False)
+    screen.iconbitmap('img/usb.ico')
     screen.mainloop()
