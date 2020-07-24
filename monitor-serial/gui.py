@@ -1,4 +1,4 @@
-from main import *
+from monitor import *
 import threading
 from serialPort import SerialPort
 import serial

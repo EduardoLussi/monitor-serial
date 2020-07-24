@@ -1,6 +1,4 @@
-import serial
 import datetime
-from tkinter import *
 from threading import Lock
 from tkinter import *
 
