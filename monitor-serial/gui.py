@@ -1,18 +1,12 @@
-from monitor import *
 import threading
 from serialPort import SerialPort
-import serial
 from tkinter import *
 
 
 class TkSerial:
-    # PORTA PROVISÓRIA SERÁ REMOVIDA APÓS A DETECÇÃO AUTOMÁTICA FUNCIONAR
-    def __init__(self, root, number, portaProvisoria=''):
+    def __init__(self, root, number):
 
-        self.serialPort = SerialPort(portaProvisoria)
-
-        # ---- CONNECTION
-        self.serialConnection = ''
+        self.serialPort = SerialPort()
 
         # ---- PORT OPTIONS
         self.optPort = ['-']
@@ -140,35 +134,13 @@ class TkSerial:
 
         self.releasePorts()
 
-    def connect(self):
-        # NÃO PERMITE CRIAR UMA NOVA CONEXÃO SE A CONEXÃO ATUAL ESTIVER ATIVA
-        if self.optVarPort.get() != self.serialPort.port or not self.serialConnection.is_open:
-            self.serialPort.port = self.optVarPort.get()
-
-            try:
-                self.serialConnection = serial.Serial(self.serialPort.port, int(self.optVarRate.get()))
-            except Exception as err:
-                print(err)
-
-                self.btnSerial['text'] = 'START'
-                self.btnSerial['bg'] = '#B8F8BE'
-                self.serialPort.flag = False
-                self.btnUpload.config(state=DISABLED)
-                p = self.serialPort.port
-                self.serialPort.port = ''
-                popupmsg(f"Couldn't connect to port {p}")
-
-                return False
-
-        return True
-
     def showTimeChange(self):
         self.serialPort.showTime = self.showTime.get()
 
     def send(self):
         command = str(self.txtSend.get())
 
-        th = threading.Thread(target=serial_write, args=(self.serialConnection, command))
+        th = threading.Thread(target=self.serialPort.serial_write, args=command)
         th.start()
 
     def clear(self):
@@ -190,23 +162,24 @@ class TkSerial:
                 menu.add_command(label=opt, command=lambda value=opt: self.optVarPort.set(value))
 
     def serialStart(self):
-        if self.serialPort.flag:
+        if self.serialPort.isReading:
             self.btnSerial['text'] = 'START'
             self.btnSerial['bg'] = '#B8F8BE'
-            self.serialPort.flag = False
             self.btnUpload.config(state=DISABLED)
-            self.serialConnection.close()
+
+            self.serialPort.disconnect()
         else:
-            self.serialPort.flag = True
-            self.btnSerial['text'] = 'STOP'
-            self.btnSerial['bg'] = '#F8C7C7'
-            self.btnUpload.config(state="normal")
+            self.serialPort.port = self.optVarPort.get()
+            self.serialPort.baudrate = int(self.optVarRate.get())
 
-            self.clear()
+            if self.serialPort.connect() is not False:
+                self.btnSerial['text'] = 'STOP'
+                self.btnSerial['bg'] = '#F8C7C7'
+                self.btnUpload.config(state="normal")
 
-            if self.connect():
-                th = threading.Thread(target=serial_read,
-                                      args=(self.serialConnection, self.serialPort.flag, self.serialPort.showTime, self.txtSerial))
+                self.clear()
+
+                th = threading.Thread(target=self.serialPort.serial_read, args=self.txtSerial)
                 th.start()
 
 
