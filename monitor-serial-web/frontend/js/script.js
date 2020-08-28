@@ -64,7 +64,7 @@ function start(i) {
             text.value += '\n' + String(insert);
             text.scrollTop = text.scrollHeight;
         });
-        worker.postMessage(i);
+        worker.postMessage(JSON.parse(JSON.stringify(i)));
 
     } else {
         btn.value = "START";
