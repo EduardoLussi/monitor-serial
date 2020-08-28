@@ -1,9 +1,9 @@
 self.addEventListener('message', function(e) {
-    while (e[1].value == 'STOP') {
+    while (true) {
         var xmlHttp = new XMLHttpRequest();
 
         try {
-            xmlHttp.open("GET", `http://localhost:8080/start${e.data[0]}`, false); // false for synchronous request
+            xmlHttp.open("GET", `http://localhost:8080/start${e}`, false); // false for synchronous request
         } catch (err) {
             console.log(err);
             self.postMessage(err);

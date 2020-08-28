@@ -2,6 +2,8 @@ function Clear(text) {
     text.value = '';
 }
 
+var worker = new Worker('./js/read.js');
+
 function start(i) {
 
     var port = document.getElementById(`ports${i}`);
@@ -10,14 +12,12 @@ function start(i) {
 
     port = port.options[port.selectedIndex].value;
     baudrate = baudrate.options[baudrate.selectedIndex].value;    
-
-    Clear(text);
     
     btn = document.getElementById(`start${i}`);
 
-    var worker = new Worker('./js/read.js');
-
     if (btn.value == 'START') {
+
+        Clear(text);
 
         var xmlHttp = new XMLHttpRequest();
 
@@ -54,16 +54,17 @@ function start(i) {
         var showTimestamp = document.getElementById(`showTimestamp${i}`);
         
         worker.addEventListener('message', function(e) {
+            insert = '';
             if (showTimestamp.checked) {
                 today = new Date();
                 insert = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()} -> `;
             }
-            insert += e.data;
+            insert += String(e.data);
 
             text.value += '\n' + String(insert);
             text.scrollTop = text.scrollHeight;
         });
-        worker.postMessage([i, btn]);
+        worker.postMessage(i);
 
     } else {
         btn.value = "START";
