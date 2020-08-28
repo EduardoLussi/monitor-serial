@@ -3,7 +3,7 @@ self.addEventListener('message', function(e) {
         var xmlHttp = new XMLHttpRequest();
 
         try {
-            xmlHttp.open("GET", `http://localhost:8080/start${e}`, false); // false for synchronous request
+            xmlHttp.open("GET", `http://localhost:8080/start${e.data}`, false); // false for synchronous request
         } catch (err) {
             console.log(err);
             self.postMessage(err);
