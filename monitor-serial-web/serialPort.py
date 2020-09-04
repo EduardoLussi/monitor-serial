@@ -3,6 +3,8 @@ import glob
 import serial
 from threading import Lock
 import datetime
+from pdu import *
+
 
 class SerialPort:
     def __init__(self):
@@ -57,22 +59,58 @@ class SerialPort:
         return 'true'
 
     def serial_read(self):
-        bytesToRead = int(self._connection.inWaiting())
-        while bytesToRead == 0:
-            bytesToRead = int(self._connection.inWaiting())
 
-        read = self._connection.read(bytesToRead)
+        attributes = []
+        values = []
 
-        try:
-            read = read.decode('utf-8').rstrip('\n')
-        except Exception as err:
-            print(err)
+        pdu = PDU_DEFAULT['attribute']
+        size = PDU_DEFAULT['size']
+        payload = PDU_DEFAULT['payload']
 
-        insert = ''
-        if self.showTime:
-            insert += (str(datetime.datetime.today())[:19]) + ' -> ' + read
-        else:
-            insert += read
+        address = ""
 
-        return insert
+        insert = True
+        i = 0
+
+        while i < len(pdu):
+
+            read = self._connection.read(size[i])
+
+            if pdu[i] == 'pdu':
+                try:
+                    pdu_type = PDU_TYPE[read]
+                except:
+                    insert = False
+                    break
+
+                size = pdu_type['size']
+                pdu = pdu_type['attribute']
+                payload = pdu_type['payload']
+                i = 0
+                continue
+
+            if pdu[i] in payload:
+                if pdu[i] == 'endereco':
+                    read = read.hex().upper()
+                    address = read
+                else:
+                    read = read.decode('utf-8')
+
+                attributes.append('timestamp')
+                values.append(str(datetime.datetime.today())[:19])
+                attributes.append(pdu[i])  # tag
+                values.append(read)
+            i += 1
+
+        if insert:
+            reading = '\n'
+
+            for iAttribute, attribute in enumerate(attributes):
+                if (attribute == 'timestamp' and self.showTime) or attribute != 'timestamp':
+                    reading += f"{attribute}: {values[iAttribute]}\n"
+            
+            return reading
+        
+        return ''
+
 

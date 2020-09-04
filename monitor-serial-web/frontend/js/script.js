@@ -21,8 +21,42 @@ function start(i) {
 
         var xmlHttp = new XMLHttpRequest();
 
+        xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState === XMLHttpRequest.DONE) {  
+                if (xmlHttp.status === 200) {  
+                    
+                    try {
+                        res = xmlHttp.responseText;
+                        if (res != 'true') {
+                            alert(`Couldn't connect to port ${port}`);
+                            return;
+                        }
+                    } catch (err) {
+                        alert(err);
+                        return;
+                    }
+            
+                    btn.value = "STOP";
+                    btn.style.background = "#b21722";
+            
+                    document.getElementById(`sendMessage${i}`).disabled = false;
+                    
+                    worker.addEventListener('message', function(e) {
+                        insert = String(e.data);
+            
+                        text.value += '\n' + String(insert);
+                        text.scrollTop = text.scrollHeight;
+                    });
+                    worker.postMessage(JSON.parse(JSON.stringify(i)));
+
+                } else {  
+                    console.log('There was a problem with the request.'); 
+                }  
+            }  
+        }
+
         try {
-            xmlHttp.open("GET", `http://localhost:8080/connect${i}/${port}/${baudrate}`, false); // false for synchronous request
+            xmlHttp.open("GET", `http://localhost:8080/connect${i}/${port}/${baudrate}`, true);
         } catch (err) {
             alert(err);
             return;
@@ -35,36 +69,6 @@ function start(i) {
             return;
         }
 
-        try {
-            res = xmlHttp.responseText;
-            if (res != 'true') {
-                alert(`Couldn't connect to port ${port}`);
-                return;
-            }
-        } catch (err) {
-            alert(err);
-            return;
-        }
-
-        btn.value = "STOP";
-        btn.style.background = "#b21722";
-
-        document.getElementById(`sendMessage${i}`).disabled = false;
-
-        var showTimestamp = document.getElementById(`showTimestamp${i}`);
-        
-        worker.addEventListener('message', function(e) {
-            insert = '';
-            if (showTimestamp.checked) {
-                today = new Date();
-                insert = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()} -> `;
-            }
-            insert += String(e.data);
-
-            text.value += '\n' + String(insert);
-            text.scrollTop = text.scrollHeight;
-        });
-        worker.postMessage(JSON.parse(JSON.stringify(i)));
 
     } else {
         btn.value = "START";
@@ -77,7 +81,7 @@ function start(i) {
         var xmlHttp = new XMLHttpRequest();
 
         try {
-            xmlHttp.open("POST", `http://localhost:8080/stop${i}`, false); // false for synchronous request
+            xmlHttp.open("POST", `http://localhost:8080/stop${i}`, true); // false for synchronous request
         } catch (err) {
             console.log(err);
         }
@@ -94,8 +98,41 @@ function start(i) {
 function releasePorts(i) {
     var xmlHttp = new XMLHttpRequest();
 
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState === XMLHttpRequest.DONE) {
+            if (xmlHttp.status === 200) {
+
+                try {
+                    res = xmlHttp.responseText;
+                } catch (err) {
+                    alert(err);
+                    return;
+                }
+            
+                res = JSON.parse(res);
+            
+                if (res != '-' && length(res) > 0) {
+                    var select = document.getElementById(`ports${i}`);
+            
+                    while (select.length > 0) {
+                        select.remove(select.length-1);
+                    }
+            
+                    for (var j = 0; j < res.length; j++) {
+                        var opt = document.createElement("option");
+                        opt.value = res[j];
+                        opt.text = res[j];
+                        select.add(opt, select.options[j]);
+                    }
+                }
+            }
+        } else {
+            console.log('There was a problem with the request.'); 
+        }
+    }
+
     try {
-        xmlHttp.open("GET", `http://localhost:8080/ports`, false); // false for synchronous request
+        xmlHttp.open("GET", `http://localhost:8080/ports`, true);
     } catch (err) {
         alert(err);
         return;
@@ -108,29 +145,6 @@ function releasePorts(i) {
         return;
     }
 
-    try {
-        res = xmlHttp.responseText;
-    } catch (err) {
-        alert(err);
-        return;
-    }
-
-    res = JSON.parse(res);
-
-    if (res != '-') {
-        var select = document.getElementById(`ports${i}`);
-
-        while (select.length > 0) {
-            select.remove(select.length-1);
-        }
-
-        for (var j = 0; j < res.length; j++) {
-            var opt = document.createElement("option");
-            opt.value = res[j];
-            opt.text = res[j];
-            select.add(opt, select.options[j]);
-        }
-    }
 }
 
 function send(i) {
@@ -139,8 +153,30 @@ function send(i) {
 
     var xmlHttp = new XMLHttpRequest();
 
+    xmlHttp.onreadystatechange = function() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {  
+            if (httpRequest.status === 200) {  
+
+                try {
+                    res = xmlHttp.responseText;
+                    if (res == 'true') {
+                        alert("Message sent successfully");
+                    } else {
+                        alert("Couldn't send the message");
+                    }
+                } catch (err) {
+                    alert(err);
+                    return;
+                }
+
+            } else {  
+                console.log('There was a problem with the request.'); 
+            }  
+        } 
+    }
+
     try {
-        xmlHttp.open("POST", `http://localhost:8080/send${i}/${message}`, false); // false for synchronous request
+        xmlHttp.open("POST", `http://localhost:8080/send${i}/${message}`, true);
     } catch (err) {
         alert(err);
     }
@@ -151,16 +187,20 @@ function send(i) {
         alert(err);
     }
 
+}
+
+function showTimestamp(i) {
+    var xmlHttp = new XMLHttpRequest();
+
     try {
-        res = xmlHttp.responseText;
-        if (res == 'true') {
-            alert("Message sent successfully");
-        } else {
-            alert("Couldn't send the message");
-        }
+        xmlHttp.open("POST", `http://localhost:8080/showTimestamp${i}`, true);
     } catch (err) {
         alert(err);
-        return;
     }
 
+    try {
+        xmlHttp.send();
+    } catch (err) {
+        alert(err);
+    }
 }

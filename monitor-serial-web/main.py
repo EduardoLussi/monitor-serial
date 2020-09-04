@@ -60,6 +60,17 @@ def send0(message):
         print(err)
         return err
 
+@post('/showTimestamp0')
+def showTimestamp0():
+    response.add_header('Access-Control-Allow-Origin', '*')
+
+    if s0.showTime:
+        s0.showTime = False
+    else: 
+        s0.showTime = True
+    
+    return ''
+
 
 
 @get('/start1')
@@ -102,6 +113,16 @@ def send1(message):
     except Exception as err:
         print(err)
         return err
+@post('/showTimestamp1')
+def showTimestamp1():
+    response.add_header('Access-Control-Allow-Origin', '*')
+
+    if s1.showTime:
+        s1.showTime = False
+    else: 
+        s1.showTime = True
+    
+    return ''
 
 
 @get('/start2')
@@ -145,6 +166,17 @@ def send2(message):
     except Exception as err:
         print(err)
         return err
+
+@post('/showTimestamp2')
+def showTimestamp2():
+    response.add_header('Access-Control-Allow-Origin', '*')
+
+    if s2.showTime:
+        s2.showTime = False
+    else: 
+        s2.showTime = True
+    
+    return ''
 
 
 run(port=8080)
