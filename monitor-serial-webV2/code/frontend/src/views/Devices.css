@@ -1,0 +1,33 @@
+div.Devices {
+    height: 95vh;
+}
+div.Devices ul.DevicesList {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    --scrollbarBG: #fafafa;
+    --thumbBG: #c3deec;
+    width: 90vw;
+    height: 90%;
+    margin: 3vh auto 0 auto;
+}
+
+ul.DevicesList::-webkit-scrollbar {
+    width: 11px;
+}
+ul.DevicesList {
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+ul.DevicesList::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+}
+ul.DevicesList::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+}
+
+ul.DevicesList>li {
+    margin: auto 2vw;
+}
