@@ -23,6 +23,10 @@ export default class App extends Component {
             break
         }
 
+        if (res.data.data === []) {
+            continue
+        }
+        
         this.setState({
             values: res.data.data
         });
