@@ -22,6 +22,9 @@ serialPorts = []
 
 #     return json.dumps(devicesDev)
 def getPorts():
+    
+    response.add_header('Access-Control-Allow-Origin', '*')
+    
     releasePorts()
 
     devices = []
