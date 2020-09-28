@@ -142,6 +142,6 @@ class SerialPort:
         if insert:
             return values            
         
-        return False
+        return []
 
 
