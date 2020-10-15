@@ -16,15 +16,18 @@ export default class App extends Component {
 
   async monitor() {
     while (true) {
-        const res = await api.get(`http://localhost:8080/start/${this.props.id}`);
-
-        if (res.data.data === false) {
+        const res = await api.get(`http://localhost:8080/read/${this.props.id}`);
+        if (res.data.payload === false) {
             alert("Couldn't connect to device");
             break
         }
 
+        if (res.data.payload === []) {
+            continue
+        }
+
         this.setState({
-            values: res.data.data
+            values: res.data.payload
         });
         if (this.state.isRunning === 'START') break;
     }
@@ -47,10 +50,14 @@ export default class App extends Component {
 
         // this.state.worker.terminate();
 
-        api.post(`http://localhost:8080/stop/${this.props.id}`);
+        api.post(`http://localhost:8080/close/${this.props.id}`);
 
     }
   }
+
+//   expandir = (id) => {
+//       console.log(id);
+//   }
 
   render() {
     return (
@@ -64,10 +71,10 @@ export default class App extends Component {
                     <div className="Props">
                         <ul>
                         {
-                            this.props.pdu.attribute.map(attribute => (
-                                <li key={this.props.pdu.attribute.indexOf(attribute)}>
-                                    <p>{attribute}</p>
-                                    <p>{this.state.values.flag ? '0' : this.state.values[attribute]}</p>
+                            this.props.attributes.map(attribute => (
+                                <li key={attribute.id}>
+                                    <p>{attribute.name}</p>
+                                    <p>{this.state.values.flag ? '0' : this.state.values[attribute.name]}</p>
                                 </li>
                             ))
                         }
@@ -94,7 +101,7 @@ export default class App extends Component {
                     <img src={imgClose} alt="Close"/>
                 </div>
                 <div className="btnExpand">
-                    <img src={imgMore} alt="Expand"/>
+                    <img src={imgMore} alt="Expand" />
                 </div>
             </div>
         </div>

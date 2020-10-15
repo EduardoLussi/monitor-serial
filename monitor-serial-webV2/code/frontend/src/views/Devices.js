@@ -10,9 +10,9 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    const res = await api.get('ports');
+    const res = await api.get('devices');
     this.setState({
-      devices: res.data
+      devices: res.data.devices
     });
   }
   
@@ -21,7 +21,12 @@ export default class App extends Component {
       <div className="Devices">
           <ul className="DevicesList">
               {this.state.devices.map(device => (
-                <li><Device id={this.state.devices.indexOf(device)} name={device.name} img={device.img} pdu={device.pduType} /></li>
+                <li>
+                  <Device id={this.state.devices.indexOf(device)} 
+                          name={device.name} 
+                          img={device.img} 
+                          attributes={device.attributes} />
+                </li>
               ))}
           </ul>
       </div>
