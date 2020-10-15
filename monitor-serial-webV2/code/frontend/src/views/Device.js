@@ -48,16 +48,11 @@ export default class App extends Component {
             isRunning: 'START'
         });
 
-        // this.state.worker.terminate();
-
         api.post(`http://localhost:8080/close/${this.props.id}`);
 
     }
   }
 
-//   expandir = (id) => {
-//       console.log(id);
-//   }
 
   render() {
     return (
