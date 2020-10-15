@@ -9,7 +9,7 @@ from Beans.PayloadAttribute import PayloadAttribute
 
 from DAOs.DeviceDAO import DeviceDAO
 
-# -------------------------------------------------------------- ADICIONEI POSITION AO BANCO DE DADOS, REALIZAR MODIFICAÇÕES
+
 class SerialPort:
     def __init__(self):
         self.id = 0

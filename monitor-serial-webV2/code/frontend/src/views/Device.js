@@ -22,17 +22,10 @@ export default class App extends Component {
             break
         }
 
-<<<<<<< HEAD
         if (res.data.payload === []) {
             continue
         }
 
-=======
-        if (res.data.data === []) {
-            continue
-        }
-        
->>>>>>> e6c5427ea745bf998013b95f53c83533bbf4940c
         this.setState({
             values: res.data.payload
         });
