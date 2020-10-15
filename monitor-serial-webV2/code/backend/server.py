@@ -4,6 +4,7 @@ from Beans.SerialPort import SerialPort
 import json
 
 SerialPorts = []
+BlackList = []
 
 
 @get('/devices')

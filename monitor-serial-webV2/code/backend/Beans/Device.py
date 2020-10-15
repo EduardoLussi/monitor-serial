@@ -6,4 +6,5 @@ class Device:
         self.byteId = b'\00'
         self.attributes = []
         self.payload = []
+        self.address = ''
 

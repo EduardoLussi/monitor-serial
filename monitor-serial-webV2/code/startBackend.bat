@@ -1,3 +1,3 @@
 pip install bottle
-cd monitor
-python main.py
+cd backend
+python server.py
