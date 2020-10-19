@@ -1,0 +1,123 @@
+div.Device {
+    background: white;
+    width: 23vw;
+    box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.2);
+    display: flex;
+    font-family: 'Century Gothic';
+    padding: 2vh 0.5vw 2vh 2vw;
+    height: 75vh;
+}
+
+div.content {
+    width: 90%;
+    text-align: center;
+}
+
+div.title {
+    display: inline-flex;
+    height: 10%;
+}
+
+div.title img {
+    width: 3vw;
+    height: 3vw;
+    margin: auto 0;
+}
+
+div.title h1 {
+    margin: auto 0 auto 1vw;
+    font-weight: lighter;
+}
+
+div.values {
+    height: 73%;
+}
+
+div.Props {
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    margin: 5vh 0 3vh 0;
+    overflow-y: auto;
+    max-height: 80%;
+    padding-right: 0.8vw;
+    scrollbar-width: thin;
+}
+
+div.Props {
+    --scrollbarBG: #fafafa;
+    --thumbBG: #bad3e0;
+}
+div.Props::-webkit-scrollbar {
+    width: 11px;
+}
+div.Props {
+    scrollbar-width: thin;
+    scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+div.Props::-webkit-scrollbar-track {
+    background: var(--scrollbarBG);
+}
+div.Props::-webkit-scrollbar-thumb {
+    background-color: var(--thumbBG) ;
+    border-radius: 6px;
+    border: 3px solid var(--scrollbarBG);
+}
+
+div.Props ul li {
+    font-size: 1vw;
+    margin: 3vh 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+div.Search {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+div.BtnSearch {
+    display: inline-flex;
+}
+
+div.BtnSearch p {
+    margin: auto 0 auto 1vw;
+    font-size: 1.1vw;
+}
+div.Search input {
+    font-family: 'Century Gothic';
+    font-size: 0.8vw;
+    line-height: 100%;
+    width: 40%;
+}
+
+button.Start {
+    font-family: 'Century Gothic';
+    border: 2px solid black;
+    background: #b8d9ff;
+    width: 50%;
+    height: 6vh;
+    font-size: 1.5vw;
+    margin: auto 0;
+    cursor: pointer;
+}
+
+button.Start:hover {
+    background: #a0caf7;
+}
+
+
+div.expand {
+    width: 10%;
+    text-align: center;
+    display: inline-block;
+}
+
+div.Close {
+    cursor: pointer;
+}
+
+div.btnExpand {
+    margin: 35vh 0 0 0.5vw;
+    cursor: pointer;
+}
