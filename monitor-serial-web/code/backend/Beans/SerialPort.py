@@ -47,7 +47,7 @@ class SerialPort:
     def setDevice(self):
         if not self.connect():
             return False
-        # CORRIGIR PROBLEMA COM BYTEID
+
         try:
             read = self._connection.read(1).hex()
             address = self._connection.read(2).hex()
@@ -56,16 +56,29 @@ class SerialPort:
             self.disconnect()
             return False
 
-
         deviceDao = DeviceDAO()
         device = deviceDao.getDevice(read)
+
+        device.attributes = deviceDao.getAttributes(device)
+        device.address = str(address)
+
+        length = device.getLengthAttributes()
+        for i in range(length + 1):
+            try:
+                byteId = self._connection.read(1).hex()
+            except Exception as err:
+                print(err)
+                return False
+
+            if byteId == device.byteId:
+                if i == length:
+                    break
+                print("Package is incorrect")
+                return False
 
         if device is False:
             self.disconnect()
             return False
-
-        device.attributes = deviceDao.getAttributes(device)
-        device.address = str(address)
 
         self.disconnect()
 
@@ -107,25 +120,33 @@ class SerialPort:
         payload = Payload()
         payload.date = datetime.now()
 
+        byteId = ''
+        length = self.device.getLengthAttributes()
+        for i in range(length):
+            try:
+                byteId = self._connection.read(1).hex()
+            except Exception as err:
+                print(err)
+                return False
+
+            if byteId == self.device.byteId:
+                break
+
+            if i == length - 1:
+                print("Id not recognized")
+                return False
+
         try:
-            byteId = str(self._connection.read(1).hex())
             address = self._connection.read(2).hex()
         except Exception as err:
             print(err)
             return False
 
-        if byteId != self.device.byteId:
-            print(byteId, self.device.byteId)
-            print("Byte id not recognized")
-            return False
-
         if address != self.device.address:
-            print(address, self.device.address)
             print("Address not recognized")
             return False
 
         for i, attribute in enumerate(self.device.attributes):
-
             value = ''
             for j in range(attribute.size):
                 try:

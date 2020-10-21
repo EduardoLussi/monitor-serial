@@ -20,7 +20,7 @@ export default class App extends Component {
     return (
       <div className="Devices">
           <ul className="DevicesList">
-              {this.state.devices == false ? <li></li> : this.state.devices.map(device => (
+              {this.state.devices === false ? <li></li> : this.state.devices.map(device => (
                 <li>
                   <Device id={this.state.devices.indexOf(device)} 
                           name={device.name} 

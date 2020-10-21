@@ -8,3 +8,8 @@ class Device:
         self.payload = []
         self.address = ''
 
+    def getLengthAttributes(self):
+        size = 0
+        for attr in self.attributes:
+            size += attr.size
+        return size
