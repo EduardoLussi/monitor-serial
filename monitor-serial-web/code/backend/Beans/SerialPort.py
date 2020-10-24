@@ -1,5 +1,6 @@
 from sys import platform
 from datetime import datetime
+from time import time
 import glob
 import serial
 
@@ -18,6 +19,10 @@ class SerialPort:
         self._connection = ''
         self.device = Device()
         self.isConnected = False
+        self.isReading = False
+        self.readingRate = 1
+
+        self.__intervalA = 0
 
     @staticmethod
     def getPorts():
@@ -113,6 +118,23 @@ class SerialPort:
     def send(self):
         pass
 
+    def setReadingRate(self):
+        if self.isReading:
+            rate = float(time() - self.__intervalA)
+
+            self.readingRate = 1 / rate
+            if rate < 0.05:
+                print(f'Device is sending too much packages: {self.readingRate:.1f} pck/s')
+                return False
+
+            self.isReading = False
+        else:
+            self.isReading = True
+
+            self.__intervalA = time()
+
+        return True
+
     def read(self):
         if not self.connect():
             return False
@@ -128,6 +150,10 @@ class SerialPort:
             except Exception as err:
                 print(err)
                 return False
+
+            if i == 0:
+                if not self.setReadingRate():
+                    return False
 
             if byteId == self.device.byteId:
                 break

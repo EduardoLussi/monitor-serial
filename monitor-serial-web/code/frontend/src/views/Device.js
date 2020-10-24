@@ -14,11 +14,17 @@ export default class App extends Component {
         }
     }
 
-  async monitor() {
+  async monitor(target) {
     while (true) {
         const res = await api.get(`http://localhost:8080/read/${this.props.id}`);
         if (res.data.payload === false) {
-            alert("Couldn't connect to device");
+            alert("There is a problem with the reading");
+            target.style.background = "#b8d9ff";
+            this.setState({
+                isRunning: 'START'
+            });
+
+            api.post(`http://localhost:8080/close/${this.props.id}`);
             break
         }
 
@@ -40,7 +46,7 @@ export default class App extends Component {
             isRunning: 'STOP'
         });
 
-        this.monitor();
+        this.monitor(event.target);
 
     } else {
         event.target.style.background = "#b8d9ff";
