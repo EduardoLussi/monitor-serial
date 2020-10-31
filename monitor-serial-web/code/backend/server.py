@@ -74,7 +74,6 @@ def read(id):
     return values
 
 
-
 @post('/close/<id>')
 def close(id):
     response.add_header('Access-Control-Allow-Origin', '*')

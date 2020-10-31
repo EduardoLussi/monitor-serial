@@ -20,7 +20,6 @@ class SerialPort:
         self.device = Device()
         self.isConnected = False
         self.isReading = False
-        self.readingRate = 0
 
         self.__intervalA = 0
 
@@ -118,27 +117,6 @@ class SerialPort:
     def send(self):
         pass
 
-    # def setReadingRate(self):
-    #     if self.isReading:
-    #         if len(self.device.payload) > 50:
-    #             rate = float(time() - self.__intervalA)
-    #
-    #             if rate > 0:
-    #                 self.readingRate = 1 / rate
-    #                 print(self.readingRate)
-    #
-    #                 if rate <= 0.001:
-    #                     print(f'Device is sending too much packages: {self.readingRate:.1f} pck/s')
-    #                     return False
-    #
-    #         self.isReading = False
-    #     else:
-    #         self.isReading = True
-    #
-    #         self.__intervalA = time()
-    #
-    #     return True
-
     def read(self):
         if self.isConnected:
             while len(self.device.payload) <= 0:
@@ -171,11 +149,6 @@ class SerialPort:
                     print(err)
                     self.disconnect()
                     return
-
-                # if i == 0:
-                #     if not self.setReadingRate():
-                #         self.disconnect()
-                #         return
 
                 if byteId == self.device.byteId:
                     break
@@ -220,7 +193,7 @@ class SerialPort:
                 first = self.device.payload.index(self.device.payload[-1])
 
                 now = datetime.now()
-            elif (datetime.now() - now).seconds >= 5:
+            elif (datetime.now() - now).seconds > 5:
                 qt = self.device.payload.index(self.device.payload[-1]) - first
                 print(f"{qt / 5} pck/s")
 

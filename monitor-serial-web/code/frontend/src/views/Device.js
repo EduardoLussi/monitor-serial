@@ -16,7 +16,7 @@ export default class App extends Component {
 
   async monitor(target) {
     
-    api.post(`http://localhost:8080/read/${this.props.id}`);
+    await api.post(`http://localhost:8080/read/${this.props.id}`);
 
     while (true) {
         const res = await api.get(`http://localhost:8080/read/${this.props.id}`);
