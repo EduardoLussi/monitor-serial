@@ -1,5 +1,7 @@
 from bottle import get, post, run, response
 
+import threading
+
 from Beans.SerialPort import SerialPort
 import json
 
@@ -33,6 +35,25 @@ def getDevices():
     return json.dumps({'devices': devices})
 
 
+@post('/read/<id>')
+def monitor(id):
+    response.add_header('Access-Control-Allow-Origin', '*')
+
+
+    try:
+        sp = SerialPorts[int(id)]
+    except Exception as err:
+        print(err)
+        return
+
+    th = threading.Thread(target=sp.monitor)
+
+    try:
+        th.start()
+    except Exception as err:
+        print(err)
+
+
 @get('/read/<id>')
 def read(id):
     response.add_header('Access-Control-Allow-Origin', '*')
@@ -51,6 +72,7 @@ def read(id):
     values = json.dumps(values)
 
     return values
+
 
 
 @post('/close/<id>')

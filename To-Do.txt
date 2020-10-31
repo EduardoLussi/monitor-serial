@@ -1,0 +1,2 @@
+- Reestruturar código para realizar monitoramento contínuo no python e enviar apenas alguns dados para o servidor.
+- Cálculo de energia deve se basear no tempo de resposta do monitoramento.

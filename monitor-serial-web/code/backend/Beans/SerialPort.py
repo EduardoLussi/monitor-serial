@@ -20,7 +20,7 @@ class SerialPort:
         self.device = Device()
         self.isConnected = False
         self.isReading = False
-        self.readingRate = 1
+        self.readingRate = 0
 
         self.__intervalA = 0
 
@@ -118,77 +118,114 @@ class SerialPort:
     def send(self):
         pass
 
-    def setReadingRate(self):
-        if self.isReading:
-            rate = float(time() - self.__intervalA)
-
-            self.readingRate = 1 / rate
-            if rate < 0.05:
-                print(f'Device is sending too much packages: {self.readingRate:.1f} pck/s')
-                return False
-
-            self.isReading = False
-        else:
-            self.isReading = True
-
-            self.__intervalA = time()
-
-        return True
+    # def setReadingRate(self):
+    #     if self.isReading:
+    #         if len(self.device.payload) > 50:
+    #             rate = float(time() - self.__intervalA)
+    #
+    #             if rate > 0:
+    #                 self.readingRate = 1 / rate
+    #                 print(self.readingRate)
+    #
+    #                 if rate <= 0.001:
+    #                     print(f'Device is sending too much packages: {self.readingRate:.1f} pck/s')
+    #                     return False
+    #
+    #         self.isReading = False
+    #     else:
+    #         self.isReading = True
+    #
+    #         self.__intervalA = time()
+    #
+    #     return True
 
     def read(self):
-        if not self.connect():
+        if self.isConnected:
+            while len(self.device.payload) <= 0:
+                continue
+            return self.device.payload[-1].toDict()
+        else:
             return False
 
-        payload = Payload()
-        payload.date = datetime.now()
+    def monitor(self):
+        self.connect()
 
-        byteId = ''
-        length = self.device.getLengthAttributes()
-        for i in range(length):
-            try:
-                byteId = self._connection.read(1).hex()
-            except Exception as err:
-                print(err)
-                return False
+        now = 0
+        first = 0
+        flagFirstExec = True
 
-            if i == 0:
-                if not self.setReadingRate():
-                    return False
+        while self.isConnected:
+            if not self.connect():
+                self.disconnect()
+                return
 
-            if byteId == self.device.byteId:
-                break
+            payload = Payload()
+            payload.date = datetime.now()
 
-            if i == length - 1:
-                print("Id not recognized")
-                return False
-
-        try:
-            address = self._connection.read(2).hex()
-        except Exception as err:
-            print(err)
-            return False
-
-        if address != self.device.address:
-            print("Address not recognized")
-            return False
-
-        for i, attribute in enumerate(self.device.attributes):
-            value = ''
-            for j in range(attribute.size):
+            byteId = ''
+            length = self.device.getLengthAttributes()
+            for i in range(length):
                 try:
-                    read = chr(int(str(self._connection.read(1).hex().upper()), 16))
+                    byteId = self._connection.read(1).hex()
                 except Exception as err:
                     print(err)
                     self.disconnect()
-                    return False
-                value += str(read)
+                    return
 
-            payloadAttribute = PayloadAttribute()
-            payloadAttribute.attribute = attribute
-            payloadAttribute.value = value
+                # if i == 0:
+                #     if not self.setReadingRate():
+                #         self.disconnect()
+                #         return
 
-            payload.payloadAttributes.append(payloadAttribute)
+                if byteId == self.device.byteId:
+                    break
 
-        self.device.payload.append(payload)
+                if i == length - 1:
+                    print("Id not recognized")
+                    self.disconnect()
+                    return
 
-        return payload.toDict()
+            try:
+                address = self._connection.read(2).hex()
+            except Exception as err:
+                print(err)
+                self.disconnect()
+                return
+
+            if address != self.device.address:
+                print("Address not recognized")
+                self.disconnect()
+                break
+
+            for i, attribute in enumerate(self.device.attributes):
+                value = ''
+                for j in range(attribute.size):
+                    try:
+                        read = chr(int(str(self._connection.read(1).hex().upper()), 16))
+                    except Exception as err:
+                        print(err)
+                        self.disconnect()
+                        return
+                    value += str(read)
+
+                payloadAttribute = PayloadAttribute()
+                payloadAttribute.attribute = attribute
+                payloadAttribute.value = value
+
+                payload.payloadAttributes.append(payloadAttribute)
+
+            self.device.payload.append(payload)
+
+            if flagFirstExec:
+                first = self.device.payload.index(self.device.payload[-1])
+
+                now = datetime.now()
+            elif (datetime.now() - now).seconds >= 5:
+                qt = self.device.payload.index(self.device.payload[-1]) - first
+                print(f"{qt / 5} pck/s")
+
+                first = self.device.payload.index(self.device.payload[-1])
+
+                now = datetime.now()
+
+            flagFirstExec = False
