@@ -10,7 +10,7 @@ class DeviceDAO:
 
     def getAttributes(self, device):
         try:
-            self.connection.cursor.execute(f"SELECT Attribute.id, Attribute.name, Attribute.size FROM ("
+            self.connection.cursor.execute(f"SELECT Attribute.id, Attribute.name, Attribute.size, Attribute.unit FROM ("
                                            f"((Attribute INNER JOIN PDUAttribute ON Attribute.id = PDUAttribute.Attribute_id)"
                                            f"INNER JOIN PDU ON PDUAttribute.PDU_id = PDU.id)"
                                            f"INNER JOIN Device ON PDU.id = Device.PDU_id) WHERE Device.id = '{str(device.id)}' ORDER BY PDUAttribute.position")
@@ -25,6 +25,7 @@ class DeviceDAO:
                 attribute.id = int(attr[0])
                 attribute.name = str(attr[1])
                 attribute.size = int(attr[2])
+                attribute.unit = str(attr[3])
 
                 attributes.append(attribute)
 

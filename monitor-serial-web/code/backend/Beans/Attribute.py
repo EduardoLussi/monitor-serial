@@ -3,3 +3,4 @@ class Attribute:
         self.id = 0
         self.name = ''
         self.size = 0
+        self.unit = ''

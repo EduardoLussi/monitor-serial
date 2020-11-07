@@ -70,26 +70,45 @@ div.Props ul li {
     justify-content: space-between;
 }
 
-div.Search {
+div.send {
     display: flex;
-    justify-content: space-between;
-    cursor: pointer;
 }
 
-div.BtnSearch {
-    display: inline-flex;
-}
-
-div.BtnSearch p {
-    margin: auto 0 auto 1vw;
-    font-size: 1.1vw;
-}
-div.Search input {
+div.send input {
+    width: 80%;
     font-family: 'Century Gothic';
     font-size: 0.8vw;
-    line-height: 100%;
-    width: 40%;
+    line-height: 1.5vw;
+    padding: 0 0.5vw;
+    pointer-events: none; 
 }
+
+div.send input.active-button {
+    pointer-events: all; 
+}
+
+div.send button {
+    width: 18%;
+    margin-left: 2%;
+    background: #b8d9ff;
+    border: 2px solid black;
+    cursor: pointer;
+}
+div.send button:hover {
+    background: #a0caf7;
+}
+
+div.send button img {
+    width: 1vw;
+}
+
+div.rate {
+    font-size: 1vw;
+    margin-top: 2vh;
+    display: flex;
+    justify-content: space-between;
+}
+
 
 button.Start {
     font-family: 'Century Gothic';

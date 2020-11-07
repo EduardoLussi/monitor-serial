@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import api from '../api';
 import './Device.css'
 import imgClose from './img/close.png';
-import imgSearch from './img/history.png';
 import imgMore from './img/next.png';
 
 export default class App extends Component {
@@ -11,7 +10,10 @@ export default class App extends Component {
         isRunning: 'START',
         values: {
             flag: true
-        }
+        },
+        rate: 0,
+        inputClass: '',
+        message: ''
     }
 
   async monitor(target) {
@@ -23,7 +25,8 @@ export default class App extends Component {
         if (res.data.payload === false) {
             target.style.background = "#b8d9ff";
             this.setState({
-                isRunning: 'START'
+                isRunning: 'START',
+                inputClass: ''
             });
 
             api.post(`http://localhost:8080/close/${this.props.id}`);
@@ -36,8 +39,10 @@ export default class App extends Component {
         }
 
         this.setState({
-            values: res.data.payload
+            values: res.data.payload,
+            rate: res.data.rate
         });
+
         if (this.state.isRunning === 'START') break;
     }
   }
@@ -46,7 +51,8 @@ export default class App extends Component {
     if (this.state.isRunning === 'START') {
         event.target.style.background = "#ff802b";
         this.setState({
-            isRunning: 'STOP'
+            isRunning: 'STOP',
+            inputClass: 'active-button'
         });
 
         this.monitor(event.target);
@@ -54,7 +60,8 @@ export default class App extends Component {
     } else {
         event.target.style.background = "#b8d9ff";
         this.setState({
-            isRunning: 'START'
+            isRunning: 'START',
+            inputClass: ''
         });
 
         api.post(`http://localhost:8080/close/${this.props.id}`);
@@ -62,8 +69,17 @@ export default class App extends Component {
     }
   }
 
+  send = async () => {
+      if (this.state.isRunning === 'STOP') {
+        const res = await api.get(`http://localhost:8080/send/${this.props.id}/${this.state.message}`);
+        if (res.data) {
+            alert('Message sent succesfully');
+        }
+      }
+  }
 
   render() {
+    let inputSend = this.state.inputClass;
     return (
         <div className="Device">
             <div className="content">
@@ -78,20 +94,23 @@ export default class App extends Component {
                             this.props.attributes.map(attribute => (
                                 <li key={attribute.id}>
                                     <p>{attribute.name}</p>
-                                    <p>{this.state.values.flag ? '0' : this.state.values[attribute.name]}</p>
+                                    <p>{this.state.values.flag ? '0' : this.state.values[attribute.name]}{attribute.unit}</p>
                                 </li>
                             ))
                         }
                         </ul>
                     </div>
 
-                    <div className="Search">
-                        <div className="BtnSearch">
-                            <img src={imgSearch} alt="Search"/>
-                            <p>Search</p>
-                        </div>
-                        <input type="date"/>
+                    <div className="send">
+                        <input type="text" className={inputSend} onChange={e => this.state.message = e.target.value}/>
+                        <button onClick={this.send}><img src={require(`./img/send.png`)} alt="Send"/></button>
                     </div>
+
+                    <div className="rate">
+                        <p>Rate: </p>
+                        <p>{this.state.rate} pck/s</p>
+                    </div>
+
                 </div>
 
                 <div className="btnStart">

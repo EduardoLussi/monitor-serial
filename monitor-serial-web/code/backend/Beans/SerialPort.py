@@ -20,6 +20,7 @@ class SerialPort:
         self.device = Device()
         self.isConnected = False
         self.isReading = False
+        self.readingRate = 0
 
         self.__intervalA = 0
 
@@ -114,8 +115,15 @@ class SerialPort:
         except Exception as err:
             print(err)
 
-    def send(self):
-        pass
+    def send(self, message):
+        if self.isConnected:
+            try:
+                self._connection.write(bytes(message, 'utf-8'))
+            except Exception as err:
+                print(err)
+                return False
+            return True
+        return False
 
     def read(self):
         if self.isConnected:
@@ -195,7 +203,7 @@ class SerialPort:
                 now = datetime.now()
             elif (datetime.now() - now).seconds > 5:
                 qt = self.device.payload.index(self.device.payload[-1]) - first
-                print(f"{qt / 5} pck/s")
+                self.readingRate = round(qt / 5)
 
                 first = self.device.payload.index(self.device.payload[-1])
 

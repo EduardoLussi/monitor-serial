@@ -62,16 +62,37 @@ def read(id):
         sp = SerialPorts[int(id)]
     except Exception as err:
         print(err)
-        return json.dumps({'payload': False})
+        return json.dumps({'payload': False, 'rate': 0})
 
     values = sp.read()
 
     if values is False:
-        return json.dumps({'payload': False})
+        return json.dumps({'payload': False, 'rate': 0})
+
+    values['rate'] = sp.readingRate
 
     values = json.dumps(values)
 
     return values
+
+
+@get('/send/<id>/<message>')
+def send(id, message):
+    response.add_header('Access-Control-Allow-Origin', '*')
+
+    try:
+        sp = SerialPorts[int(id)]
+    except Exception as err:
+        print(err)
+        return False
+
+    try:
+        res = sp.send(str(message))
+    except Exception as err:
+        print(err)
+        return False
+
+    return json.dumps(res)
 
 
 @post('/close/<id>')
