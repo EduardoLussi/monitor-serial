@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../api';
 import './Device.css'
+import Chart from './Chart';
 import imgClose from './img/close.png';
 import imgMore from './img/next.png';
 
@@ -13,12 +14,21 @@ export default class App extends Component {
         },
         rate: 0,
         inputClass: '',
-        message: ''
+        message: '',
+        maxRate: 1000,
+        from: '',
+        to: '',
+        attribute: '',
+        showExpandData: true
     }
 
   async monitor(target) {
     
-    await api.post(`http://localhost:8080/read/${this.props.id}`);
+    if (this.state.maxRate > 1500) {
+        this.state.maxRate = 1500;
+    }
+
+    await api.post(`http://localhost:8080/read/${this.props.id}/${this.state.maxRate}`);
 
     while (true) {
         const res = await api.get(`http://localhost:8080/read/${this.props.id}`);
@@ -63,7 +73,7 @@ export default class App extends Component {
             isRunning: 'START',
             inputClass: ''
         });
-
+        console.log('Close');
         api.post(`http://localhost:8080/close/${this.props.id}`);
 
     }
@@ -76,6 +86,16 @@ export default class App extends Component {
             alert('Message sent succesfully');
         }
       }
+  }
+
+  expandHandleClick = (e) => {
+    if (this.state.showExpandData) {
+        this.setState({showExpandData: false});
+        e.target.style.transform = "rotate(180deg)";
+    } else {
+        this.setState({showExpandData: true});
+        e.target.style.transform = "rotate(0deg)";
+    }
   }
 
   render() {
@@ -111,6 +131,24 @@ export default class App extends Component {
                         <p>{this.state.rate} pck/s</p>
                     </div>
 
+                    <div className="maxRate">
+                        <p>Max rate: </p>
+                        <input 
+                            type="range" 
+                            min="1" max="1500" 
+                            value={this.state.maxRate} 
+                            onChange={e => this.setState({maxRate: e.target.value})}
+                            className="rangeInput"
+                        />
+
+                        <input 
+                            type="text"
+                            value={this.state.maxRate}
+                            onChange={e => this.setState({maxRate: e.target.value})}
+                            className="rangeInputValue"
+                        />
+                    </div>
+
                 </div>
 
                 <div className="btnStart">
@@ -124,9 +162,48 @@ export default class App extends Component {
                     <img src={imgClose} alt="Close"/>
                 </div>
                 <div className="btnExpand">
-                    <img src={imgMore} alt="Expand" />
+                    <img src={imgMore} alt="Expand" onClick={this.expandHandleClick}/>
                 </div>
             </div>
+            {
+                this.state.showExpandData ? '' : 
+                <div className="expand-data">
+                    <div className="graph-container">
+                        <div className="graph-content">
+                            <div className="graph-attributes">
+                                <ul>
+                                    {
+                                        this.props.attributes.map((attribute, index) => (
+                                            <li key={attribute.id} onClick={() => {this.setState({attribute: attribute})}}>
+                                                {index + 1}<span>{index + 1} - {attribute.name}</span>                
+                                            </li>
+                                        ))
+                                    }
+                                </ul>
+                            </div>
+                            <div className="graph">
+                                <Chart 
+                                id={this.props.id}
+                                attribute={this.state.attribute} 
+                                from={this.state.from} 
+                                to={this.state.to}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="graph-search">
+                        <div className="from-to">
+                            <div>
+                                <p>From:</p>
+                                <input type="datetime-local" step="1" onChange={e => this.setState({from: e.target.value.replace('T', ' ')})}/>
+                            </div>
+                            <div>
+                                <p>To:</p>
+                                <input type="datetime-local" step="1" onChange={e => this.setState({to: e.target.value.replace('T', ' ')})}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     );
   }

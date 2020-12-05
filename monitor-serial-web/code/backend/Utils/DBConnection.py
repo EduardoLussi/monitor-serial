@@ -10,7 +10,7 @@ class Connection:
             Connection.__instance = object.__new__(cls)
 
             try:
-                Connection.__instance.banco = sqlite3.connect('data.db')
+                Connection.__instance.banco = sqlite3.connect('data.db', check_same_thread=False)
                 Connection.__instance.cursor = Connection.__instance.banco.cursor()
             except sqlite3.Error as err:
                 print(err)
@@ -44,6 +44,19 @@ class Connection:
                                                  "Attribute_id INTEGER,"
                                                  "FOREIGN KEY (PDU_id) REFERENCES PDU (id),"
                                                  "FOREIGN KEY (Attribute_id) REFERENCES Attribute (id));")
+
+            Connection.__instance.cursor.execute("CREATE TABLE IF NOT EXISTS Payload ("
+                                                "id	INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                                "Device_id INTEGER,"
+                                                "data TEXT,"
+                                                "FOREIGN KEY(Device_id) REFERENCES Device (id));")
+
+            Connection.__instance.cursor.execute("CREATE TABLE IF NOT EXISTS PayloadAttribute ("
+                                                 "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                                 "Payload_id INTEGER,"
+                                                 "Attribute_id INTEGER,"
+                                                 "FOREIGN KEY(Payload_id) REFERENCES Payload (id),"
+                                                 "FOREIGN KEY(Attribute_id) REFERENCES Attribute (id));")
 
             Connection.__instance.banco.commit()
         except sqlite3.Error as err:

@@ -1,9 +1,6 @@
-from datetime import datetime
-from time import sleep
+import time
+from datetime import timezone, datetime
 
-a = datetime.now()
-sleep(5)
-b = datetime.now()
-print(b - a)
-print((b - a).seconds)
-print(((b - a).microseconds > 106000))
+date = '2020-11-24 10:55:00'
+print(date)
+print(datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timestamp())

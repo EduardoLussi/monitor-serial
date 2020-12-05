@@ -3,11 +3,13 @@ from datetime import datetime
 from time import time
 import glob
 import serial
+import threading
 
 from Beans.Device import Device
 from Beans.Payload import Payload
 from Beans.PayloadAttribute import PayloadAttribute
 
+from DAOs.PayloadAttributeDAO import PayloadAttributeDAO
 from DAOs.DeviceDAO import DeviceDAO
 
 
@@ -22,7 +24,10 @@ class SerialPort:
         self.isReading = False
         self.readingRate = 0
 
+        self.maxReadingRate = 1500
+
         self.__intervalA = 0
+        self.__lock = threading.Lock()
 
     @staticmethod
     def getPorts():
@@ -112,6 +117,9 @@ class SerialPort:
         try:
             self._connection.close()
             self.isConnected = False
+            paDao = PayloadAttributeDAO()
+            thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
+            thCommit.start()
         except Exception as err:
             print(err)
 
@@ -136,9 +144,11 @@ class SerialPort:
     def monitor(self):
         self.connect()
 
-        now = 0
-        first = 0
+        paDao = PayloadAttributeDAO()
+
         flagFirstExec = True
+        now = 0
+        contPackets = 0
 
         while self.isConnected:
             if not self.connect():
@@ -195,18 +205,28 @@ class SerialPort:
 
                 payload.payloadAttributes.append(payloadAttribute)
 
+            th = threading.Thread(target=paDao.insertPayload, args=(self.device, payload, self.__lock))
+            th.start()
+            self.device.payload.clear()
             self.device.payload.append(payload)
 
             if flagFirstExec:
-                first = self.device.payload.index(self.device.payload[-1])
-
+                contPackets = 0
                 now = datetime.now()
             elif (datetime.now() - now).seconds > 5:
-                qt = self.device.payload.index(self.device.payload[-1]) - first
-                self.readingRate = round(qt / 5)
+                self.readingRate = round(contPackets / 5)
 
-                first = self.device.payload.index(self.device.payload[-1])
-
+                contPackets = 0
                 now = datetime.now()
 
+                thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
+                thCommit.start()
+
+                if int(self.readingRate) > int(self.maxReadingRate):
+                    print("Packet rate is over the limit")
+                    self.disconnect()
+                    return
+
+
             flagFirstExec = False
+            contPackets += 1

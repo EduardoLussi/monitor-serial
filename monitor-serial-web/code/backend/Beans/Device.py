@@ -1,3 +1,8 @@
+from DAOs.PayloadAttributeDAO import PayloadAttributeDAO
+
+from datetime import datetime
+
+
 class Device:
     def __init__(self):
         self.id = 0
@@ -13,3 +18,22 @@ class Device:
         for attr in self.attributes:
             size += attr.size
         return size
+
+    def getReading(self, fromDate, toDate, attribute):
+        paDao = PayloadAttributeDAO()
+        values = paDao.getValues(self, attribute, fromDate, toDate)
+
+        if values is False:
+            return False
+
+        valuesList = []
+        datesList = []
+        for value in values:
+            datesList.append(value[1])
+            valuesList.append(int(value[0]))
+
+        return {
+            'values': valuesList,
+            'dates': datesList
+        }
+

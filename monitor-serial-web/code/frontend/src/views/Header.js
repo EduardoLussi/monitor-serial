@@ -7,7 +7,7 @@ function App() {
     <header>
         <div className="home">
             <img src={home} alt="home"/>
-            <h1>My Home</h1>
+            <h1>My Home - CIoT</h1>
         </div>
     </header>
   );

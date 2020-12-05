@@ -35,16 +35,19 @@ def getDevices():
     return json.dumps({'devices': devices})
 
 
-@post('/read/<id>')
-def monitor(id):
+@post('/read/<id>/<maxRate>')
+def monitor(id, maxRate):
     response.add_header('Access-Control-Allow-Origin', '*')
 
+    sp = ''
 
     try:
         sp = SerialPorts[int(id)]
     except Exception as err:
         print(err)
-        return
+        return False
+
+    sp.maxReadingRate = int(maxRate)
 
     th = threading.Thread(target=sp.monitor)
 
@@ -52,6 +55,7 @@ def monitor(id):
         th.start()
     except Exception as err:
         print(err)
+        return False
 
 
 @get('/read/<id>')
@@ -98,7 +102,6 @@ def send(id, message):
 @post('/close/<id>')
 def close(id):
     response.add_header('Access-Control-Allow-Origin', '*')
-
     try:
         sp = SerialPorts[int(id)]
     except Exception as err:
@@ -109,6 +112,24 @@ def close(id):
         sp.disconnect()
     except Exception as err:
         print(err)
+
+
+@get('/getValues/<id>/<fromDate>/<toDate>/<attribute>')
+def getValues(id, fromDate, toDate, attribute):
+    response.add_header('Access-Control-Allow-Origin', '*')
+
+    try:
+        sp = SerialPorts[int(id)]
+    except Exception as err:
+        print(err)
+        return json.dumps({False})
+
+    data = sp.device.getReading(fromDate, toDate, attribute)
+
+    if data is False:
+        return json.dumps({False})
+
+    return json.dumps(data)
 
 
 run(port=8080)

@@ -2,15 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ac86a657-31d8-4504-86af-e47c7a97c8ad" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../../To-Do.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../To-Do.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DAOs/PayloadAttributeDAO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Projeto/Class-Diagram.vpd" beforeDir="false" afterPath="$PROJECT_DIR$/../../Projeto/Class-Diagram.vpd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Projeto/DB/modelo.mwb" beforeDir="false" afterPath="$PROJECT_DIR$/../../Projeto/DB/modelo.mwb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Projeto/DB/modelo.mwb.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../../Projeto/DB/modelo.mwb.bak" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Beans/Attribute.py" beforeDir="false" afterPath="$PROJECT_DIR$/Beans/Attribute.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Beans/Device.py" beforeDir="false" afterPath="$PROJECT_DIR$/Beans/Device.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Beans/SerialPort.py" beforeDir="false" afterPath="$PROJECT_DIR$/Beans/SerialPort.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DAOs/DeviceDAO.py" beforeDir="false" afterPath="$PROJECT_DIR$/DAOs/DeviceDAO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/DBConnection.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/DBConnection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data.db" beforeDir="false" afterPath="$PROJECT_DIR$/data.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/debug.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/public/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/views/Device.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Device.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/views/Device.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Device.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/Devices.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Devices.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Header.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,8 +32,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="84" column="28" lean-forward="true" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
+            <state relative-caret-position="275">
+              <caret line="111" column="8" selection-start-line="111" selection-start-column="8" selection-end-line="111" selection-end-column="8" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -33,10 +42,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Utils/DBConnection.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="22" column="25" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DAOs/DeviceDAO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="35" column="24" lean-forward="true" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
+            <state relative-caret-position="140">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="34" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -45,12 +63,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Beans/SerialPort.py">
+        <entry file="file://$PROJECT_DIR$/DAOs/PayloadAttributeDAO.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1160">
-              <caret line="125" column="20" selection-start-line="125" selection-start-column="20" selection-end-line="125" selection-end-column="20" />
+            <state relative-caret-position="280">
+              <caret line="32" column="61" selection-start-line="32" selection-start-column="61" selection-end-line="32" selection-end-column="61" />
               <folding>
-                <element signature="e#0#24#0" expanded="true" />
+                <element signature="e#0#41#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -59,11 +77,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
+            <state relative-caret-position="80">
+              <caret line="4" column="11" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="11" />
               <folding>
-                <element signature="e#0#29#0" expanded="true" />
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Beans/SerialPort.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="416">
+              <caret line="158" column="39" selection-start-line="158" selection-start-column="36" selection-end-line="158" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -71,8 +98,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Beans/Device.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="280">
+              <caret line="23" column="66" selection-start-line="23" selection-start-column="60" selection-end-line="23" selection-end-column="66" />
+              <folding>
+                <element signature="e#0#56#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -90,7 +120,7 @@
         <entry file="file://$PROJECT_DIR$/Beans/Attribute.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
             </state>
           </provider>
         </entry>
@@ -98,8 +128,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Beans/Payload.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
-              <caret line="2" column="17" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="17" />
+            <state relative-caret-position="100">
+              <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -117,6 +147,7 @@
     <findStrings>
       <find>date</find>
       <find>isConnec</find>
+      <find>readingRate</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -134,23 +165,23 @@
         <option value="$PROJECT_DIR$/Beans/PDUAttribute.py" />
         <option value="$PROJECT_DIR$/DAOs/PDUAttributeDAO.py" />
         <option value="$PROJECT_DIR$/Beans/PDU.py" />
-        <option value="$PROJECT_DIR$/Utils/DBConnection.py" />
         <option value="$PROJECT_DIR$/Utils/test.py" />
         <option value="$PROJECT_DIR$/Beans/PayloadAttribute.py" />
         <option value="$PROJECT_DIR$/Beans/Payload.py" />
-        <option value="$PROJECT_DIR$/Beans/Device.py" />
-        <option value="$PROJECT_DIR$/tests.py" />
-        <option value="$PROJECT_DIR$/Beans/SerialPort.py" />
-        <option value="$PROJECT_DIR$/server.py" />
         <option value="$PROJECT_DIR$/Beans/Attribute.py" />
         <option value="$PROJECT_DIR$/DAOs/DeviceDAO.py" />
+        <option value="$PROJECT_DIR$/Utils/DBConnection.py" />
+        <option value="$PROJECT_DIR$/Beans/SerialPort.py" />
+        <option value="$PROJECT_DIR$/server.py" />
+        <option value="$PROJECT_DIR$/Beans/Device.py" />
+        <option value="$PROJECT_DIR$/tests.py" />
+        <option value="$PROJECT_DIR$/DAOs/PayloadAttributeDAO.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-108" />
-    <option name="y" value="24" />
-    <option name="width" value="1936" />
+    <option name="x" value="-1" />
+    <option name="width" value="1148" />
     <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -190,7 +221,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../2 - Semestre/POO/charcreation" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -210,7 +241,7 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.server">
-    <configuration name="DBConnection" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="PayloadAttributeDAO" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Code" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -218,11 +249,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Utils" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DAOs" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Utils/DBConnection.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DAOs/PayloadAttributeDAO.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -319,9 +350,9 @@
       <list>
         <item itemvalue="Python.server" />
         <item itemvalue="Python.tests" />
+        <item itemvalue="Python.PayloadAttributeDAO" />
         <item itemvalue="Python.SerialPort" />
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.DBConnection" />
       </list>
     </recent_temporary>
   </component>
@@ -349,14 +380,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24657534" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15279241" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2112676" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.2112676" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -370,12 +400,12 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24657534" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15279241" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.2654388" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.2112676" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -401,13 +431,6 @@
     <entry file="file://$PROJECT_DIR$/DAOs/PDUAttributeDAO.py" />
     <entry file="file://$PROJECT_DIR$/DAOs/PDUDAO.py" />
     <entry file="file://$PROJECT_DIR$/Beans/PDU.py" />
-    <entry file="file://$PROJECT_DIR$/Utils/DBConnection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="19" column="31" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Utils/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -415,20 +438,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests.py">
+    <entry file="file://$PROJECT_DIR$/Utils/DBConnection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Beans/Device.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        <state relative-caret-position="440">
+          <caret line="22" column="25" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
         </state>
       </provider>
     </entry>
@@ -439,34 +452,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Beans/Payload.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Beans/SerialPort.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1160">
-          <caret line="125" column="20" selection-start-line="125" selection-start-column="20" selection-end-line="125" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Beans/Attribute.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Beans/Payload.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DAOs/DeviceDAO.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="35" column="24" lean-forward="true" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
+        <state relative-caret-position="140">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Beans/SerialPort.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="158" column="39" selection-start-line="158" selection-start-column="36" selection-end-line="158" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="4" column="11" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Beans/Device.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="23" column="66" selection-start-line="23" selection-start-column="60" selection-end-line="23" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DAOs/PayloadAttributeDAO.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="32" column="61" selection-start-line="32" selection-start-column="61" selection-end-line="32" selection-end-column="61" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
@@ -475,8 +515,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="84" column="28" lean-forward="true" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
+        <state relative-caret-position="275">
+          <caret line="111" column="8" selection-start-line="111" selection-start-column="8" selection-end-line="111" selection-end-column="8" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
