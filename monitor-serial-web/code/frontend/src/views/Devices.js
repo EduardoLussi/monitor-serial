@@ -15,6 +15,58 @@ export default class App extends Component {
     this.setState({
       devices: res.data.devices
     });
+    // this.setState({
+    //     devices: [
+    //         {
+    //             name: 'Fire Alarm',
+    //             img: 'fire-alarm.png',
+    //             attributes: [
+    //                 {
+    //                     id: 1,
+    //                     name: 'humidity',
+    //                     unit: '%'
+    //                 },
+    //                 {
+    //                     id: 2,
+    //                     name: 'temperature',
+    //                     unit: 'ºC'
+    //                 },
+    //                 {
+    //                     id: 3,
+    //                     name: 'gas',
+    //                     unit: '%'
+    //                 },
+    //                 {
+    //                     id: 4,
+    //                     name: 'flames',
+    //                 }
+                    
+    //             ]
+    //         },
+    //         {
+    //             name: 'RFID',
+    //             img: 'rfid.png',
+    //             attributes: [
+    //                 {
+    //                     id: 1,
+    //                     name: 'tag',
+    //                     unit: '  '
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             name: 'Water Metering',
+    //             img: 'pipe.png',
+    //             attributes: [
+    //                 {
+    //                     id: 1,
+    //                     name: 'consume',
+    //                     unit: ' '
+    //                 }
+    //             ]
+    //         }
+    //     ]
+    //   });
   }
   
   render() {

@@ -1,6 +1,6 @@
 from sys import platform
 from datetime import datetime
-from time import time
+
 import glob
 import serial
 import threading
@@ -226,7 +226,6 @@ class SerialPort:
                     print("Packet rate is over the limit")
                     self.disconnect()
                     return
-
 
             flagFirstExec = False
             contPackets += 1

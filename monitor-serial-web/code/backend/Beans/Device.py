@@ -1,7 +1,5 @@
 from DAOs.PayloadAttributeDAO import PayloadAttributeDAO
 
-from datetime import datetime
-
 
 class Device:
     def __init__(self):
