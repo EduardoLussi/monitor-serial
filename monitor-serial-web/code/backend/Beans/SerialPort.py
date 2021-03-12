@@ -118,8 +118,10 @@ class SerialPort:
             self.isConnected = False
             self.isReading = False
             paDao = PayloadAttributeDAO()
-            thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
-            thCommit.start()
+
+            self.observers['sio'].start_background_task(paDao.commitDB, self.__lock, '')
+            # thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
+            # thCommit.start()
             self.observers['deviceStatus'](self.id)
         except Exception as err:
             print(err)
@@ -208,8 +210,9 @@ class SerialPort:
                 payload.payloadAttributes.append(payloadAttribute)
 
             try:
-                th = threading.Thread(target=paDao.insertPayload, args=(self.device, payload, self.__lock))
-                th.start()
+                self.observers['sio'].start_background_task(paDao.insertPayload, self.device, payload, self.__lock)
+                # th = threading.Thread(target=paDao.insertPayload, args=(self.device, payload, self.__lock))
+                # th.start()
             except Exception as err:
                 print(err)
 
@@ -225,9 +228,9 @@ class SerialPort:
 
                 contPackets = 0
                 now = datetime.now()
-
-                thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
-                thCommit.start()
+                self.observers['sio'].start_background_task(paDao.commitDB, self.__lock, '')
+                # thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
+                # thCommit.start()
 
                 if int(self.readingRate) > int(self.maxReadingRate):
                     print("Packet rate is over the limit")

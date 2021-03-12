@@ -6,7 +6,7 @@ from flask_cors import cross_origin, CORS
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-sio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
+sio = SocketIO(app, cors_allowed_origins='*')
 cors = CORS(app, resources={r"/resetDevices": {"origins": "*"},
                             r"/close/*": {"origins": "*"},
                             r"/getValues/*": {"origins": "*"}})
@@ -58,6 +58,7 @@ def releasePorts():
             sp.id = i
             sp.observers['deviceStatus'] = deviceStatus
             sp.observers['devicePayload'] = devicePayload
+            sp.observers['sio'] = sio
             SerialPorts.append(sp)
 
     devices()
@@ -88,14 +89,14 @@ def monitor(id, maxRate):
 
     sp.maxReadingRate = int(maxRate)
     print("monitoring")
-    #sio.start_background_task(target=sp.monitor)
-    th = threading.Thread(target=sp.monitor)
-
-    try:
-        th.start()
-    except Exception as err:
-        print(err)
-        return False
+    sio.start_background_task(target=sp.monitor)
+    # th = threading.Thread(target=sp.monitor)
+    #
+    # try:
+    #     th.start()
+    # except Exception as err:
+    #     print(err)
+    #     return False
 
     return 'ok'
 
