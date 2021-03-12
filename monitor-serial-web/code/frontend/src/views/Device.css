@@ -128,7 +128,7 @@ div.maxRate input.rangeInputValue {
 }
 
 
-button.Start {
+button.start {
     font-family: 'Century Gothic';
     border: 2px solid black;
     background: #b8d9ff;
@@ -139,8 +139,23 @@ button.Start {
     cursor: pointer;
 }
 
-button.Start:hover {
+button.start:hover {
     background: #a0caf7;
+}
+
+button.stop {
+    font-family: 'Century Gothic';
+    border: 2px solid black;
+    background: #ff802b;
+    width: 50%;
+    height: 6vh;
+    font-size: 1.5vw;
+    margin: auto 0;
+    cursor: pointer;
+}
+
+button.stop:hover {
+    background: #fa741b;
 }
 
 

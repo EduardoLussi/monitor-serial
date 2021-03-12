@@ -4,13 +4,15 @@ import './Device.css'
 import Chart from './Chart';
 import imgClose from './img/close.png';
 import imgMore from './img/next.png';
+import io from 'socket.io-client';
 
 export default class App extends Component {
 
     state = {
-        isRunning: 'START',
-        values: {
-            flag: true
+        config: {
+            name: "",
+            img: "cpu.png",
+            attributes: []
         },
         rate: 0,
         inputClass: '',
@@ -19,68 +21,50 @@ export default class App extends Component {
         from: '',
         to: '',
         attribute: '',
-        showExpandData: true
+        showExpandData: true,
+        payload: [],
+        isReading: false
     }
 
-  async monitor(target) {
+    async componentDidMount() {
+        this.registerToSocket();
+        
+        const res = await api.get(`device/${this.props.id}`);
+        console.log(res.data);
+        this.setState({ config: res.data.device, isReading: res.data.isReading });
+    }
+
+    registerToSocket = () => {
+        const socket = io("http://localhost:8080");
+        
+        socket.on(`${this.props.id}Payload`, data => {
+            console.log(data);
+            this.setState({ payload: data });
+        });
+
+        socket.on(`${this.props.id}Status`, data => {
+            console.log(data);
+            this.setState({ isReading: data.isReading });
+        });
+    }
+
+  monitor(target) {
     
     if (this.state.maxRate > 1500) {
         this.state.maxRate = 1500;
     }
 
-    await api.post(`http://localhost:8080/read/${this.props.id}/${this.state.maxRate}`);
+    api.post(`http://localhost:8080/read/${this.props.id}/${this.state.maxRate}`);
 
-    while (true) {
-        const res = await api.get(`http://localhost:8080/read/${this.props.id}`);
-        if (res.data.payload === false) {
-            target.style.background = "#b8d9ff";
-            this.setState({
-                isRunning: 'START',
-                inputClass: ''
-            });
-
-            api.post(`http://localhost:8080/close/${this.props.id}`);
-            alert("There is a problem with the reading");
-            break
-        }
-
-        if (res.data.payload === []) {
-            continue
-        }
-
-        this.setState({
-            values: res.data.payload,
-            rate: res.data.rate
-        });
-
-        if (this.state.isRunning === 'START') break;
-    }
   }
 
   start = (event) => {
-    if (this.state.isRunning === 'START') {
-        event.target.style.background = "#ff802b";
-        this.setState({
-            isRunning: 'STOP',
-            inputClass: 'active-button'
-        });
-
-        this.monitor(event.target);
-
-    } else {
-        event.target.style.background = "#b8d9ff";
-        this.setState({
-            isRunning: 'START',
-            inputClass: ''
-        });
-        console.log('Close');
-        api.post(`http://localhost:8080/close/${this.props.id}`);
-
-    }
+    if (this.state.isReading) api.post(`http://localhost:8080/close/${this.props.id}`);
+    else this.monitor();
   }
 
   send = async () => {
-      if (this.state.isRunning === 'STOP') {
+      if (this.state.isReading === 'STOP') {
         const res = await api.get(`http://localhost:8080/send/${this.props.id}/${this.state.message}`);
         if (res.data) {
             alert('Message sent succesfully');
@@ -104,17 +88,17 @@ export default class App extends Component {
         <div className="Device">
             <div className="content">
                 <div className="title">
-                    <img src={require(`./img/${this.props.img}`)} alt={this.props.name}/>
-                    <h1>{this.props.name}</h1>
+                    <img src={require(`./img/${this.state.config.img}`)} alt={this.state.config.name}/>
+                    <h1>{this.state.config.name}</h1>
                 </div>
                 <div className="values">
                     <div className="Props">
                         <ul>
                         {
-                            this.props.attributes.map(attribute => (
+                            this.state.config.attributes.map(attribute => (
                                 <li key={attribute.id}>
                                     <p>{attribute.name}</p>
-                                    <p>{this.state.values.flag ? '0' : this.state.values[attribute.name]}{attribute.unit}</p>
+                                    <p>{this.state.payload[attribute.name]}{attribute.unit}</p>
                                 </li>
                             ))
                         }
@@ -152,8 +136,8 @@ export default class App extends Component {
                 </div>
 
                 <div className="btnStart">
-                    <button className="Start" onClick={this.start}>
-                        {this.state.isRunning}
+                    <button className={this.state.isReading ? "stop" : "start"} onClick={this.start}>
+                        {this.state.isReading ? "STOP" : "START"}
                     </button>
                 </div>
             </div>
@@ -173,7 +157,7 @@ export default class App extends Component {
                             <div className="graph-attributes">
                                 <ul>
                                     {
-                                        this.props.attributes.map((attribute, index) => (
+                                        this.state.config.attributes.map((attribute, index) => (
                                             <li key={attribute.id} onClick={() => {this.setState({attribute: attribute})}}>
                                                 {index + 1}<span>{index + 1} - {attribute.name}</span>                
                                             </li>

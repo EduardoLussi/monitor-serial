@@ -3,6 +3,7 @@ from datetime import datetime
 
 import glob
 import serial
+from concurrent.futures import ThreadPoolExecutor
 import threading
 
 from Beans.Device import Device
@@ -28,6 +29,7 @@ class SerialPort:
 
         self.__intervalA = 0
         self.__lock = threading.Lock()
+        self.observers = {}
 
     @staticmethod
     def getPorts():
@@ -49,8 +51,6 @@ class SerialPort:
                 result.append(port)
             except (OSError, serial.SerialException):
                 pass
-        if len(result) == 0:
-            return False
 
         return result
 
@@ -69,7 +69,6 @@ class SerialPort:
         deviceDao = DeviceDAO()
         device = deviceDao.getDevice(read)
 
-        device.attributes = deviceDao.getAttributes(device)
         device.address = str(address)
 
         length = device.getLengthAttributes()
@@ -117,9 +116,11 @@ class SerialPort:
         try:
             self._connection.close()
             self.isConnected = False
+            self.isReading = False
             paDao = PayloadAttributeDAO()
             thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
             thCommit.start()
+            self.observers['deviceStatus'](self.id)
         except Exception as err:
             print(err)
 
@@ -149,7 +150,8 @@ class SerialPort:
         flagFirstExec = True
         now = 0
         contPackets = 0
-
+        self.isReading = True
+        self.observers['deviceStatus'](self.id)
         while self.isConnected:
             if not self.connect():
                 self.disconnect()
@@ -205,10 +207,15 @@ class SerialPort:
 
                 payload.payloadAttributes.append(payloadAttribute)
 
-            th = threading.Thread(target=paDao.insertPayload, args=(self.device, payload, self.__lock))
-            th.start()
+            try:
+                th = threading.Thread(target=paDao.insertPayload, args=(self.device, payload, self.__lock))
+                th.start()
+            except Exception as err:
+                print(err)
+
             self.device.payload.clear()
             self.device.payload.append(payload)
+            self.observers['devicePayload'](self.id, payload)
 
             if flagFirstExec:
                 contPackets = 0
