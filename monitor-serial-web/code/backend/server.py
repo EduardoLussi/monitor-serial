@@ -88,14 +88,14 @@ def monitor(id, maxRate):
 
     sp.maxReadingRate = int(maxRate)
     print("monitoring")
-    sio.start_background_task(target=sp.monitor)
-    # th = threading.Thread(target=sp.monitor)
-    #
-    # try:
-    #     th.start()
-    # except Exception as err:
-    #     print(err)
-    #     return False
+    #sio.start_background_task(target=sp.monitor)
+    th = threading.Thread(target=sp.monitor)
+
+    try:
+        th.start()
+    except Exception as err:
+        print(err)
+        return False
 
     return 'ok'
 
