@@ -3,8 +3,6 @@ from datetime import datetime
 
 import glob
 import serial
-from concurrent.futures import ThreadPoolExecutor
-import threading
 
 from Beans.Device import Device
 from Beans.Payload import Payload
@@ -25,10 +23,9 @@ class SerialPort:
         self.isReading = False
         self.readingRate = 0
 
-        self.maxReadingRate = 1500
+        self.maxReadingRate = 1000
 
         self.__intervalA = 0
-        self.__lock = threading.Lock()
         self.observers = {}
 
     @staticmethod
@@ -95,6 +92,7 @@ class SerialPort:
             return False
 
         self.device = device
+        self.id = self.device.id
 
         return True
 
@@ -119,9 +117,7 @@ class SerialPort:
             self.isReading = False
             paDao = PayloadAttributeDAO()
 
-            self.observers['sio'].start_background_task(paDao.commitDB, self.__lock, '')
-            # thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
-            # thCommit.start()
+            self.observers['sio'].start_background_task(paDao.commitDB)
             self.observers['deviceStatus'](self.id)
         except Exception as err:
             print(err)
@@ -210,9 +206,7 @@ class SerialPort:
                 payload.payloadAttributes.append(payloadAttribute)
 
             try:
-                self.observers['sio'].start_background_task(paDao.insertPayload, self.device, payload, self.__lock)
-                # th = threading.Thread(target=paDao.insertPayload, args=(self.device, payload, self.__lock))
-                # th.start()
+                self.observers['sio'].start_background_task(paDao.insertPayload, self.device, payload)
             except Exception as err:
                 print(err)
 
@@ -228,9 +222,7 @@ class SerialPort:
 
                 contPackets = 0
                 now = datetime.now()
-                self.observers['sio'].start_background_task(paDao.commitDB, self.__lock, '')
-                # thCommit = threading.Thread(target=paDao.commitDB, args=(self.__lock, ''))
-                # thCommit.start()
+                self.observers['sio'].start_background_task(paDao.commitDB)
 
                 if int(self.readingRate) > int(self.maxReadingRate):
                     print("Packet rate is over the limit")

@@ -26,9 +26,18 @@ export default class App extends Component {
         isReading: false
     }
 
+
+    async componentDidUpdate(prevProps){ 
+        if(this.props.id !== prevProps.id){
+            this.registerToSocket();
+            const res = await api.get(`device/${this.props.id}`);
+            console.log(res.data);
+            this.setState({ config: res.data.device, isReading: res.data.isReading });
+        }
+    }
+    
     async componentDidMount() {
         this.registerToSocket();
-        
         const res = await api.get(`device/${this.props.id}`);
         console.log(res.data);
         this.setState({ config: res.data.device, isReading: res.data.isReading });
@@ -44,7 +53,7 @@ export default class App extends Component {
 
         socket.on(`${this.props.id}Status`, data => {
             console.log(data);
-            this.setState({ isReading: data.isReading });
+            this.setState({ isReading: data.isReading, maxRate: data.rate });
         });
     }
 

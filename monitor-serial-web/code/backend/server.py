@@ -17,13 +17,10 @@ SerialPorts = []
 
 @sio.event
 def deviceStatus(id):
-    try:
-        port = SerialPorts[int(id)]
-    except Exception as err:
-        print(err)
-        return False
-
-    sio.emit(f'{id}Status', {'isReading': port.isReading})
+    for port in SerialPorts:
+        if port.id == int(id):
+            sio.emit(f'{id}Status', {'isReading': port.isReading, 'rate': port.maxReadingRate})
+            return
 
 
 @sio.event
@@ -55,7 +52,6 @@ def releasePorts():
         sp = SerialPort()
         sp.portName = portName
         if sp.setDevice():
-            sp.id = i
             sp.observers['deviceStatus'] = deviceStatus
             sp.observers['devicePayload'] = devicePayload
             sp.observers['sio'] = sio
@@ -79,24 +75,11 @@ def resetDevices():
 @app.route('/read/<id>/<maxRate>', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def monitor(id, maxRate):
-    sp = ''
-
-    try:
-        sp = SerialPorts[int(id)]
-    except Exception as err:
-        print(err)
-        return False
-
-    sp.maxReadingRate = int(maxRate)
-    print("monitoring")
-    sio.start_background_task(target=sp.monitor)
-    # th = threading.Thread(target=sp.monitor)
-    #
-    # try:
-    #     th.start()
-    # except Exception as err:
-    #     print(err)
-    #     return False
+    for port in SerialPorts:
+        if port.id == int(id):
+            port.maxReadingRate = int(maxRate)
+            sio.start_background_task(target=port.monitor)
+            break
 
     return 'ok'
 
@@ -104,17 +87,13 @@ def monitor(id, maxRate):
 @app.route('/close/<id>', methods=['POST'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def close(id):
-
-    try:
-        sp = SerialPorts[int(id)]
-    except Exception as err:
-        print(err)
-        return
-
-    try:
-        sp.disconnect()
-    except Exception as err:
-        print(err)
+    for port in SerialPorts:
+        if port.id == int(id):
+            try:
+                port.disconnect()
+            except Exception as err:
+                print(err)
+            break
 
     return 'ok'
 
@@ -133,51 +112,35 @@ def devicesReq():
 @app.route('/device/<id>', methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def deviceConfig(id):
-    try:
-        port = SerialPorts[int(id)]
-    except Exception as err:
-        print(err)
-        return False
+    for port in SerialPorts:
+        if port.id == int(id):
+            device = {
+                'name': port.device.name,
+                'img': port.device.img,
+                'attributes': []
+            }
+            for attribute in port.device.attributes:
+                device['attributes'].append({
+                    'id': attribute.id,
+                    'name': attribute.name,
+                    'unit': attribute.unit
+                })
 
-    device = {
-        'name': port.device.name,
-        'img': port.device.img,
-        'attributes': []
-    }
-    for attribute in port.device.attributes:
-        device['attributes'].append({
-            'id': attribute.id,
-            'name': attribute.name,
-            'unit': attribute.unit
-        })
+            return json.dumps({'device': device, 'isReading': port.isReading, 'rate': port.maxReadingRate})
 
-    return json.dumps({'device': device, 'isReading': port.isReading})
+    return json.dumps({'device': {}, 'isReading': False})
 
 
 @app.route('/getValues/<id>/<fromDate>/<toDate>/<attribute>', methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def getValues(id, fromDate, toDate, attribute):
-    try:
-        sp = SerialPorts[int(id)]
-    except Exception as err:
-        print(err)
-        return json.dumps({False})
-
-    data = sp.device.getReading(fromDate, toDate, attribute)
-    if data is False:
-        return json.dumps({False})
-
-    return json.dumps(data)
-
-
-# @sio.event
-# def connect():
-#     print('connect')
-#
-#
-# @sio.event
-# def disconnect():
-#     print('disconnect')
+    for port in SerialPorts:
+        if port.id == int(id):
+            data = port.device.getReading(fromDate, toDate, attribute)
+            if data is False:
+                return json.dumps({False})
+            return json.dumps(data)
+    return json.dumps(False)
 
 
 if __name__ == '__main__':

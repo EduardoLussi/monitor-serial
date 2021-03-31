@@ -39,6 +39,7 @@ class DeviceDAO:
         try:
             self.connection.cursor.execute(f"SELECT * FROM Device WHERE byteId = '{str(byteId)}'")
             deviceList = self.connection.cursor.fetchall()
+
             if len(deviceList) == 0:
                 return False
 

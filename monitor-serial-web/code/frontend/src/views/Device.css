@@ -26,6 +26,7 @@ div.title img {
 div.title h1 {
     margin: auto 0 auto 1vw;
     font-weight: lighter;
+    font-size: 200%;
 }
 
 div.values {

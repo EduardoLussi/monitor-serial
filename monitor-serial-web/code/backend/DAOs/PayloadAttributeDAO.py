@@ -6,8 +6,7 @@ class PayloadAttributeDAO:
     def __init__(self):
         self.connection = Connection()
 
-    def insertPayload(self, device, payload, lock):
-        lock.acquire()
+    def insertPayload(self, device, payload):
         try:
             self.connection.cursor.execute(f"INSERT INTO Payload (Device_id, timestamp) VALUES ({str(device.id)}, "
                                            f"{payload.date.timestamp()});")
@@ -20,12 +19,10 @@ class PayloadAttributeDAO:
                 self.connection.cursor.execute(f"INSERT INTO PayloadAttribute (Payload_id, Attribute_id, value) "
                                                f"VALUES ({str(payloadId)}, {str(payloadAttribute.attribute.id)}, "
                                                f"'{str(payloadAttribute.value)}');")
-            lock.release()
             return True
 
         except Exception as err:
             print(f"Failed to insert payload: \n{err}")
-            lock.release()
             return False
 
     def getValues(self, device, attribute, fromDate, toDate):
@@ -49,7 +46,5 @@ class PayloadAttributeDAO:
             print(f"Failed to get values: \n{err}")
             return False
 
-    def commitDB(self, lock, a):
-        lock.acquire()
+    def commitDB(self):
         self.connection.banco.commit()
-        lock.release()

@@ -7,10 +7,9 @@ import io from 'socket.io-client';
 
 export default class App extends Component {
 
-  // CORRIGIR PROBLEMA COM DEVICE
   state = {
     devices: []
-  }
+  }  
 
   async componentDidMount() {
     this.registerToSocket();  
@@ -34,13 +33,14 @@ export default class App extends Component {
   }
   
   render() {
+    console.log("Rerendering devices");
     return (
       <div className="Devices">
           <button onClick={this.resetDevices}>ATUALIZAR</button>
           <ul className="DevicesList">
               {this.state.devices.lenght === 0 ? <li></li> : this.state.devices.map(device => (
                 <li>
-                  <Device id={device} />
+                  <Device key={device.id} id={device} />
                 </li>
               ))}
           </ul>
