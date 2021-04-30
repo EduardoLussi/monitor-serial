@@ -1,2 +1,2 @@
-cd frontend
+cd Cloud-Frontend
 npm start

@@ -1,1 +1,2 @@
-- Consertar todas as gambiarras
+- Implementar Auth0 em Login + configurar backend
+- Criar Usuário no banco
