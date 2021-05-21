@@ -1,10 +1,22 @@
 from Utils.DBConnection import Connection
 from datetime import datetime
+from queue import Queue
 
 
 class PayloadAttributeDAO:
     def __init__(self):
         self.connection = Connection()
+        self.queue = Queue()
+        self.queueFlag = True
+
+    def payloadQueueConsumer(self):
+        while self.queueFlag or self.queue.qsize() > 0:
+            device, payload = self.queue.get()
+            #print(f"Inserindo em {device.name} -> {payload.payloadAttributes[0].attribute.name}: {payload.payloadAttributes[0].value}")
+            #print(f"Tamanho da fila: {self.queue.qsize()}")
+            if self.queueFlag:
+                self.insertPayload(device, payload)
+        print("Payload db consumer finished")
 
     def insertPayload(self, device, payload):
         try:

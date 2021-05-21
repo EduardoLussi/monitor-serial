@@ -4,13 +4,14 @@
 char a[10] = {0x12, 0xAA, 0xA8, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31}; //fire alarm
 //char a[9] = {0x14, 0xAA, 0xA8, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30};
 
-int x=1000;
+int x=500;
+int cont = 0;
 
 void setup() {
  Serial.begin(115200);
 
  //Timer1.initialize(5000000); // Inicializa o Timer1 e configura para um período de 0,5 segundos
-// Timer1.attachInterrupt(decrease_x); // Configura a função callback() como a função para ser chamada a cada interrupção do Timer1
+ //Timer1.attachInterrupt(decrease_x); // Configura a função callback() como a função para ser chamada a cada interrupção do Timer1
 }
 
 void loop() {
@@ -89,8 +90,10 @@ void loop() {
     a[6] = 0x35;
   }
  
-  Serial.println(a); 
-  delay(x);
+  Serial.println(a);
+  //Serial.println(cont);
+  //cont++;
+//  delay(1);
   
 }
 

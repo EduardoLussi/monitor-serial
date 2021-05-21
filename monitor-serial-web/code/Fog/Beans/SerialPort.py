@@ -1,5 +1,7 @@
 from sys import platform
 from datetime import datetime
+from threading import Thread
+from time import sleep
 
 import glob
 import serial
@@ -24,7 +26,7 @@ class SerialPort:
         self.readingRate = 0
 
         self.maxReadingRate = 1000
-
+        self.paDao = PayloadAttributeDAO()
         self.__intervalA = 0
         self.observers = {}
 
@@ -56,40 +58,24 @@ class SerialPort:
             return False
 
         try:
-            read = self._connection.read(1).hex()
-            address = self._connection.read(2).hex()
+            read = self._connection.readline()[:-2]
         except Exception as err:
             print(err)
             self.disconnect()
             return False
 
         deviceDao = DeviceDAO()
-        device = deviceDao.getDevice(read)
-
+        byteId = str(hex(read[0]))[2:]
+        device = deviceDao.getDevice(byteId)
+        address = str(hex(read[1]))[2:]
+        address += str(hex(read[2]))[2:]
         device.address = str(address)
 
-        length = device.getLengthAttributes()
-        for i in range(length + 1):
-            try:
-                byteId = self._connection.read(1).hex()
-            except Exception as err:
-                print(err)
-                return False
-
-            if byteId == device.byteId:
-                if i == length:
-                    break
-                print("Package is incorrect")
-                return False
-
-        if device is False:
+        if device is False or device.attributes is False or len(read) != device.getLengthAttributes() + 3:
             self.disconnect()
             return False
 
         self.disconnect()
-
-        if device.attributes is False:
-            return False
 
         self.device = device
         self.id = self.device.id
@@ -112,6 +98,7 @@ class SerialPort:
 
     def disconnect(self):
         try:
+            self.paDao.queueFlag = False
             self._connection.close()
             self.isConnected = False
             self.isReading = False
@@ -140,65 +127,67 @@ class SerialPort:
         else:
             return False
 
-    def monitor(self):
+    def monitor2(self):
         self.connect()
 
-        paDao = PayloadAttributeDAO()
+        pcks = 0
+        now = datetime.today()
+        readings = []
+        while self.isConnected:
+            # read = ''
+            # for i in range(10):
+            #     read += conn.read(1).hex()
+            read = str(self._connection.readline()).replace(r"\r\n'", '').replace("b'", '')
+            read = read[1:]
+            pcks += 1
+            # print(read)
+            readings.append(read)
+            if (datetime.today() - now).seconds >= 1:
+                print(pcks)
+                now = datetime.today()
+                readings.clear()
+                pcks = 0
+        return
 
-        flagFirstExec = True
-        contDb = 0
-        now = 0
+    def monitor(self):
+        self.paDao.queueFlag = True
+        self.connect()
+        self._connection.readline()
+        self.observers['sio'].start_background_task(self.paDao.payloadQueueConsumer)
         contPackets = 0
         self.isReading = True
         self.observers['deviceStatus'](self.id)
+        now = datetime.now()
         while self.isConnected:
             if not self.connect():
                 self.disconnect()
                 return
 
+            contPackets += 1
             payload = Payload()
             payload.date = datetime.now()
-
-            byteId = ''
-            length = self.device.getLengthAttributes()
-            for i in range(length):
-                try:
-                    byteId = self._connection.read(1).hex()
-                except Exception as err:
-                    print(err)
-                    self.disconnect()
-                    return
-
-                if byteId == self.device.byteId:
-                    break
-
-                if i == length - 1:
-                    print("Id not recognized")
-                    self.disconnect()
-                    return
-
             try:
-                address = self._connection.read(2).hex()
+                read = self._connection.readline()[:-2]
             except Exception as err:
                 print(err)
                 self.disconnect()
                 return
 
-            if address != self.device.address:
-                print("Address not recognized")
-                self.disconnect()
-                break
+            byteId = str(hex(read[0]))[2:]
+            address = str(hex(read[1]))[2:]
+            address += str(hex(read[2]))[2:]
 
-            for i, attribute in enumerate(self.device.attributes):
+            if byteId != self.device.byteId or len(read) != self.device.getLengthAttributes() + 3:
+                self.disconnect()
+                print("Packet not recognized")
+                return
+
+            i = 3
+            for attribute in self.device.attributes:
                 value = ''
-                for j in range(attribute.size):
-                    try:
-                        read = chr(int(str(self._connection.read(1).hex().upper()), 16))
-                    except Exception as err:
-                        print(err)
-                        self.disconnect()
-                        return
-                    value += str(read)
+                for _ in range(attribute.size):
+                    value += chr(int(hex(read[i]), 16))
+                    i += 1
 
                 payloadAttribute = PayloadAttribute()
                 payloadAttribute.attribute = attribute
@@ -206,28 +195,17 @@ class SerialPort:
 
                 payload.payloadAttributes.append(payloadAttribute)
 
-            try:
-                self.observers['sio'].start_background_task(paDao.insertPayload, self.device, payload)
-            except Exception as err:
-                print(err)
+            # Insere payload na fila de inserção
+            self.paDao.queue.put((self.device, payload))
 
             self.device.payload.clear()
             self.device.payload.append(payload)
-            self.observers['devicePayload'](self.id, payload)
 
-            if flagFirstExec:
-                contPackets = 0
-                now = datetime.now()
-            elif (datetime.now() - now).seconds > 1:
+            if (datetime.now() - now).seconds >= 1:
+                self.observers['devicePayload'](self.id, payload)
                 self.readingRate = contPackets
 
                 contPackets = 0
-                now = datetime.now()
-
-                contDb += 1
-                if contDb == 5:
-                    self.observers['sio'].start_background_task(paDao.commitDB)
-                    contDb = 0
 
                 self.observers['deviceStatus'](self.id)
 
@@ -236,5 +214,4 @@ class SerialPort:
                     self.disconnect()
                     return
 
-            flagFirstExec = False
-            contPackets += 1
+                now = datetime.now()

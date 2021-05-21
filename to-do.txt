@@ -1,2 +1,2 @@
-- Implementar Auth0 em Login + configurar backend
-- Criar Usuário no banco
+- Fazer template da dashboard
+- Implementar dashboard e múltiplas telas

@@ -43,7 +43,7 @@ export default class App extends Component {
 
     registerToSocket = () => {
         const socket = io(this.props.apiUrl);
-        
+        console.log(`Registering to ${this.props.id}Payload`);
         socket.on(`${this.props.id}Payload`, data => {
             console.log(data);
             this.setState({ payload: data });

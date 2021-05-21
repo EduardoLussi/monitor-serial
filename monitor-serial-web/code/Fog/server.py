@@ -1,13 +1,13 @@
-#from Beans.SerialPort import SerialPort
-from Simulation.SerialPort import SerialPort
+from Beans.SerialPort import SerialPort
+#from Simulation.SerialPort import SerialPort
 import json
-import threading
+from threading import Thread
 from flask import Flask
 from flask_cors import cross_origin, CORS
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-sio = SocketIO(app, cors_allowed_origins='*')
+sio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
 cors = CORS(app, resources={r"/resetDevices": {"origins": "*"},
                             r"/close/*": {"origins": "*"},
                             r"/getValues/*": {"origins": "*"}})
@@ -15,7 +15,31 @@ app.config['CORS_HEADERS'] = 'Content_Type'
 
 SerialPorts = []
 
+stop = True
+def test():
+    import psutil
+    from time import sleep
+    from datetime import datetime
+    now_list = []
+    percent = []
+    pcks = []
+    while stop:
+        now = datetime.now().time()
+        pr = psutil.cpu_percent()
+        print(f"{now} {pr}")
+        now_list.append(str(now).replace('.', ','))
+        percent.append(str(pr).replace('.', ','))
+        pcks.append(SerialPorts[0].readingRate)
+        sleep(1)
+    arquivo = open("cpu.txt", "a")
+    for now in now_list:
+        arquivo.writelines(f"{now}\n")
+    for pr in percent:
+        arquivo.writelines(f"{pr}\n")
+    for rate in pcks:
+        arquivo.writelines(f"{rate}\n")
 
+th = Thread(target=test)
 @sio.event
 def deviceStatus(id):
     for port in SerialPorts:
@@ -79,7 +103,7 @@ def monitor(id, maxRate):
             port.maxReadingRate = int(maxRate)
             sio.start_background_task(target=port.monitor)
             break
-
+    #th.start()
     return 'ok'
 
 
@@ -93,7 +117,8 @@ def close(id):
             except Exception as err:
                 print(err)
             break
-
+    global stop
+    stop = False
     return 'ok'
 
 
@@ -143,4 +168,4 @@ def getValues(id, fromDate, toDate, attribute):
 
 
 if __name__ == '__main__':
-    sio.run(app, port=8080)
+    sio.run(app, port=8080, debug=True)
