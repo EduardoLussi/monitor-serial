@@ -43,15 +43,10 @@ export default class App extends Component {
         this.setState({ devices: data });
     });
   }
-
-  resetDevices = () => {
-    this.state.api.post("resetDevices");
-  }
   
   render() {
     return (
       <div className="Devices">
-          <button onClick={this.resetDevices}>ATUALIZAR</button>
           <ul className="DevicesList">
               {this.state.devices.lenght === 0 ? <li></li> : this.state.devices.map(device => (
                 <li>

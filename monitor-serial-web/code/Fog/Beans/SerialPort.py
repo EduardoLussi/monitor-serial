@@ -1,33 +1,24 @@
 from sys import platform
-from datetime import datetime
+
 from threading import Thread
-from time import sleep
 
 import glob
 import serial
 
-from Beans.Device import Device
-from Beans.Payload import Payload
-from Beans.PayloadAttribute import PayloadAttribute
-
-from DAOs.PayloadAttributeDAO import PayloadAttributeDAO
 from DAOs.DeviceDAO import DeviceDAO
 
 
 class SerialPort:
     def __init__(self):
-        self.id = 0
         self.portName = ''
         self.baudRate = 115200
         self._connection = ''
-        self.device = Device()
+        self.devices = []
         self.isConnected = False
-        self.isReading = False
-        self.readingRate = 0
+        self.stayConnected = True
 
-        self.maxReadingRate = 1000
-        self.paDao = PayloadAttributeDAO()
-        self.__intervalA = 0
+        self.thMonitor = ''
+
         self.observers = {}
 
     @staticmethod
@@ -53,165 +44,93 @@ class SerialPort:
 
         return result
 
-    def setDevice(self):
-        if not self.connect():
-            return False
-
-        try:
-            read = self._connection.readline()[:-2]
-        except Exception as err:
-            print(err)
-            self.disconnect()
-            return False
-
-        deviceDao = DeviceDAO()
-        byteId = str(hex(read[0]))[2:]
-        device = deviceDao.getDevice(byteId)
-        address = str(hex(read[1]))[2:]
-        address += str(hex(read[2]))[2:]
-        device.address = str(address)
-
-        if device is False or device.attributes is False or len(read) != device.getLengthAttributes() + 3:
-            self.disconnect()
-            return False
-
-        self.disconnect()
-
-        self.device = device
-        self.id = self.device.id
-
-        return True
-
     def connect(self):
-        if self.isConnected:
-            return True
-
-        try:
-            self._connection = serial.Serial(self.portName, self.baudRate)
-        except Exception as err:
-            print(err)
-            return False
-
-        self.isConnected = True
-
-        return True
-
-    def disconnect(self):
-        try:
-            self.paDao.queueFlag = False
-            self._connection.close()
-            self.isConnected = False
-            self.isReading = False
-            paDao = PayloadAttributeDAO()
-
-            self.observers['sio'].start_background_task(paDao.commitDB)
-            self.observers['deviceStatus'](self.id)
-        except Exception as err:
-            print(err)
-
-    def send(self, message):
-        if self.isConnected:
+        while self.isConnected is False:
             try:
-                self._connection.write(bytes(message, 'utf-8'))
+                self._connection = serial.Serial(self.portName, self.baudRate)
+                self.isConnected = True
             except Exception as err:
                 print(err)
-                return False
-            return True
-        return False
 
-    def read(self):
-        if self.isConnected:
-            while len(self.device.payload) <= 0:
-                continue
-            return self.device.payload[-1].toDict()
-        else:
-            return False
+    def disconnect(self):
+        self._connection.close()
+        self.isConnected = False
 
-    def monitor2(self):
-        self.connect()
+    # def send(self, message):
+    #     if self.isConnected:
+    #         try:
+    #             self._connection.write(bytes(message, 'utf-8'))
+    #         except Exception as err:
+    #             print(err)
+    #             return False
+    #         return True
+    #     return False
 
-        pcks = 0
-        now = datetime.today()
-        readings = []
-        while self.isConnected:
-            # read = ''
-            # for i in range(10):
-            #     read += conn.read(1).hex()
-            read = str(self._connection.readline()).replace(r"\r\n'", '').replace("b'", '')
-            read = read[1:]
-            pcks += 1
-            # print(read)
-            readings.append(read)
-            if (datetime.today() - now).seconds >= 1:
-                print(pcks)
-                now = datetime.today()
-                readings.clear()
-                pcks = 0
-        return
+    # def read(self):
+    #     if self.isConnected:
+    #         while len(self.device.payload) <= 0:
+    #             continue
+    #         return self.device.payload[-1].toDict()
+    #     else:
+    #         return False
 
     def monitor(self):
-        self.paDao.queueFlag = True
+        # Primeiro pacote da conexão é desconsiderado
         self.connect()
-        self._connection.readline()
-        self.observers['sio'].start_background_task(self.paDao.payloadQueueConsumer)
-        contPackets = 0
-        self.isReading = True
-        self.observers['deviceStatus'](self.id)
-        now = datetime.now()
-        while self.isConnected:
-            if not self.connect():
-                self.disconnect()
-                return
+        try:
+            self._connection.readline()
+        except Exception as err:
+            print(err)
 
-            contPackets += 1
-            payload = Payload()
-            payload.date = datetime.now()
+        while self.stayConnected:
+            self.connect()
+
+            # Leitura do pacote
             try:
                 read = self._connection.readline()[:-2]
             except Exception as err:
                 print(err)
-                self.disconnect()
-                return
+                continue    # Pacote é desconsiderado se ocorrer erro na leitura
 
+            # Identifica byteId e endereço
             byteId = str(hex(read[0]))[2:]
             address = str(hex(read[1]))[2:]
             address += str(hex(read[2]))[2:]
 
-            if byteId != self.device.byteId or len(read) != self.device.getLengthAttributes() + 3:
-                self.disconnect()
-                print("Packet not recognized")
-                return
+            # Transorma pacote para String
+            packet = byteId
+            packet += address
+            for byte in read[3:]:
+                packet += chr(int(hex(byte), 16))
 
-            i = 3
-            for attribute in self.device.attributes:
-                value = ''
-                for _ in range(attribute.size):
-                    value += chr(int(hex(read[i]), 16))
-                    i += 1
+            currentDevice = ''
 
-                payloadAttribute = PayloadAttribute()
-                payloadAttribute.attribute = attribute
-                payloadAttribute.value = value
+            # Verifica existência de dispositivo na lista
+            deviceFound = False
+            for device in self.devices:
+                if device.address == address:
+                    currentDevice = device
+                    deviceFound = True
+                    break
 
-                payload.payloadAttributes.append(payloadAttribute)
+            # Caso o dispositivo não estiver na lista, precisa ser identificado
+            if deviceFound is False:
+                deviceDao = DeviceDAO()
+                device = deviceDao.getDevice(byteId, address)   # Busca dispositivo no banco
 
-            # Insere payload na fila de inserção
-            self.paDao.queue.put((self.device, payload))
+                if device is False:     # Se o dispositivo não for reconhecido, pacote é desconsiderado
+                    print(f"Device {address} not recognized")
+                    continue
 
-            self.device.payload.clear()
-            self.device.payload.append(payload)
+                print(f"{device.deviceType.name} ({device.address}) found")
 
-            if (datetime.now() - now).seconds >= 1:
-                self.observers['devicePayload'](self.id, payload)
-                self.readingRate = contPackets
+                device.observers['deviceStatus'] = self.observers['deviceStatus']
+                device.observers['devicePayload'] = self.observers['devicePayload']
 
-                contPackets = 0
+                self.devices.append(device)
+                self.observers['devices']()     # Emite atualização nos dispositivos
+                currentDevice = device
 
-                self.observers['deviceStatus'](self.id)
+            currentDevice.treat(packet)    # Dispositivo trata seu pacote
 
-                if int(self.readingRate) > int(self.maxReadingRate):
-                    print("Packet rate is over the limit")
-                    self.disconnect()
-                    return
-
-                now = datetime.now()
+        self.disconnect()

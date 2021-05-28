@@ -1,6 +1,7 @@
 class Payload:
     def __init__(self):
         self.date = ''
+        self.rate = 0
         self.payloadAttributes = []
 
     def toDict(self):
@@ -9,6 +10,7 @@ class Payload:
         }
 
         payload['payload']['date'] = str(self.date)
+        payload['payload']['rate'] = str(self.rate)
 
         return payload
 

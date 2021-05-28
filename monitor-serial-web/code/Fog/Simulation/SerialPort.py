@@ -4,7 +4,7 @@ from time import sleep
 
 from random import randint
 
-from Beans.Device import Device
+from Beans.DeviceType import Device
 from Beans.Payload import Payload
 from Beans.PayloadAttribute import PayloadAttribute
 

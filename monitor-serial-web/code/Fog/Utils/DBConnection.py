@@ -1,5 +1,7 @@
 import sqlite3
 
+from threading import Lock
+
 
 class Connection:
 
@@ -15,9 +17,12 @@ class Connection:
             except sqlite3.Error as err:
                 print(err)
 
-            cls.createDatabase()
+            # cls.createDatabase()
 
         return Connection.__instance
+
+    def __init__(self):
+        self.lock = Lock()
 
     @staticmethod
     def createDatabase():

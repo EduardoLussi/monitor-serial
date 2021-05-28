@@ -12,7 +12,6 @@ export default class App extends Component {
             img: "cpu.png",
             attributes: []
         },
-        rate: 0,
         inputClass: '',
         message: '',
         maxRate: 1000,
@@ -38,7 +37,7 @@ export default class App extends Component {
         this.registerToSocket();
         const res = await this.props.api.get(`device/${this.props.id}`);
         console.log(res.data);
-        this.setState({ config: res.data.device, isReading: res.data.isReading });
+        this.setState({ config: res.data.device, isReading: res.data.isReading, maxRate: res.data.maxRate });
     }
 
     registerToSocket = () => {
@@ -51,7 +50,7 @@ export default class App extends Component {
 
         socket.on(`${this.props.id}Status`, data => {
             console.log(data);
-            this.setState({ isReading: data.isReading, maxRate: data.maxRate, rate: data.rate });
+            this.setState({ isReading: data.isReading, maxRate: data.maxRate });
         });
     }
 
@@ -101,6 +100,10 @@ export default class App extends Component {
                 <div className="values">
                     <div className="Props">
                         <ul>
+                        <li key="address">
+                            <p>Address</p>
+                            <p>{this.props.id}</p>
+                        </li>
                         {
                             this.state.config.attributes.map(attribute => (
                                 <li key={attribute.id}>
@@ -119,7 +122,7 @@ export default class App extends Component {
 
                     <div className="rate">
                         <p>Rate: </p>
-                        <p>{this.state.rate} pck/s</p>
+                        <p>{this.state.payload.rate} pck/s</p>
                     </div>
 
                     <div className="maxRate">
@@ -160,10 +163,13 @@ export default class App extends Component {
                         <div className="graph-content">
                             <div className="graph-attributes">
                                 <ul>
+                                    <li key="0" onClick={() => {this.setState({attribute: 'rate'})}}>
+                                        1<span>1 - Rate</span>                
+                                    </li>
                                     {
                                         this.state.config.attributes.map((attribute, index) => (
                                             <li key={attribute.id} onClick={() => {this.setState({attribute: attribute})}}>
-                                                {index + 1}<span>{index + 1} - {attribute.name}</span>                
+                                                {index + 2}<span>{index + 2} - {attribute.name}</span>                
                                             </li>
                                         ))
                                     }

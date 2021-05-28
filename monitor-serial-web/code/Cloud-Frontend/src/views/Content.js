@@ -2,25 +2,34 @@ import React, { Component } from 'react';
 import api from '../api';
 import Devices from './Devices';
 import './Content.css';
+import axios from 'axios';
 
 export default class App extends Component {
 
   state = {
     apiUrl: '',
     fogs: [],
-    userId: 0
+    userId: 0,
+    api: '',
   }
 
   async componentDidUpdate(prevProps) {
     if (this.props !== prevProps && this.props.isAuthenticated) {
       console.log(this.props.user);
       const res = await api.get(`/Fog/${this.props.user.email}`);
+      console.log(res.data);
+      if (res.data.length == 0) return;
       this.setState({
         apiUrl: res.data[0].address,
         fogs: res.data,
+        api: axios.create({ baseURL: res.data[0].address })
       });
       console.log(res.data);
     }
+  }
+
+  resetDevices = () => {
+    this.state.api.post("resetDevices");
   }
 
   render() {
@@ -36,7 +45,7 @@ export default class App extends Component {
                       ))}
                   </ul>
                 </div>
-                <div class="release-button">
+                <div class="release-button" onClick={() => this.resetDevices()}>
                   <img src={require('./img/refresh.png')} alt="release"/>
                 </div>
             </div>

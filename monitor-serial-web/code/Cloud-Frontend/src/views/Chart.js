@@ -8,8 +8,8 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 export default class Chart extends Component {
 
     setDataSet() {
-       
-        api.get(`http://localhost:8080/getValues/${this.props.id}/${this.props.from}/${this.props.to}/${this.props.attribute.id}`)
+        const id = this.props.attribute == 'rate' ? 0 : this.props.attribute.id;
+        api.get(`http://localhost:8080/getValues/${this.props.id}/${this.props.from}/${this.props.to}/${id}`)
         .then(res => {
             console.log(res);
             if (res.data !== false) {    
