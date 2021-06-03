@@ -5,17 +5,12 @@ Thread fire_alarm1;
 Thread fire_alarm2;
 Thread rfid1;
 
-boolean mutex = true;
-
 void setup() {
  Serial.begin(115200);
- fire_alarm1.setInterval(50);
  fire_alarm1.onRun(send1);
 
- fire_alarm2.setInterval(3000);
  fire_alarm2.onRun(send2);
 
- rfid1.setInterval(1000);
  rfid1.onRun(send3);
 
  fire_alarm1.run();
@@ -35,6 +30,7 @@ void send1() {
     a1[6] = 0x35;
   }
   Serial.print(a1);
+  delay(10);
 }
 
 char a2[12] = {0x12, 0xAB, 0xA8, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31, '\r', '\n'};
@@ -48,13 +44,14 @@ void send2() {
   } else {
     a2[6] = 0x35;
   }
-
   Serial.print(a2);
+  delay(100);
 }
 
 char a3[14] = {0x11, 0xAA, 0x88, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31, 0x39, '\r', '\n'};
 void send3() {
   Serial.print(a3);
+  delay(1);
 }
 
 void loop() {

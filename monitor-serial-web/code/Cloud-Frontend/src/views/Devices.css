@@ -3,20 +3,6 @@ div.Devices {
     margin-left: 6%;
 }
 
-div.Devices>button.refresh {
-    margin: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    left: 4vw;
-    top: 8vh;
-}
-
-div.Devices>button.refresh img {
-    width: 2vw;
-}
-
 div.Devices ul.DevicesList {
     display: flex;
     overflow-x: auto;

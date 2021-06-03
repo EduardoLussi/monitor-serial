@@ -27,6 +27,8 @@ div.title h1 {
     margin: auto 0 auto 1vw;
     font-weight: lighter;
     font-size: 200%;
+    text-decoration: none;
+    color: #000;
 }
 
 div.values {

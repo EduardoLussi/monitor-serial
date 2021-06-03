@@ -14,10 +14,8 @@ export default class App extends Component {
   }  
 
   async componentDidMount() {
-    console.log(this.props.apiUrl);
-    this.registerToSocket();  
+    this.registerToSocket();
     const res = await this.state.api.get("devices");
-    console.log(res.data);
     this.setState({ devices: res.data });
   }
 
@@ -29,9 +27,7 @@ export default class App extends Component {
         api: newapi
       });
       const res = await newapi.get("devices");
-      console.log(this.props.apiUrl);
       this.registerToSocket();
-      console.log(res.data);
       this.setState({ devices: res.data });
     } 
   }
@@ -39,7 +35,6 @@ export default class App extends Component {
   registerToSocket = () => {
     const socket = io(this.props.apiUrl);
     socket.on('devices', data => {
-        console.log(data);
         this.setState({ devices: data });
     });
   }

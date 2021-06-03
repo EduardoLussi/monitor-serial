@@ -4,6 +4,8 @@ import home from './img/smart-home.png';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
+import { Link } from 'react-router-dom';
+
 function App() {
 
   const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
@@ -12,7 +14,9 @@ function App() {
     <header>
         <div className="home">
             <img src={home} alt="home"/>
-            <h1>My Home - CIoT</h1>
+            <Link to="/" style={{"text-decoration": "none", color:"white"}} onClick={() => {window.location.href="/"}}>
+              <h1>My Home - CIoT</h1>
+            </Link>
             <div className="login">
               {!isAuthenticated ? (<button className="login" onClick={() => loginWithRedirect()}>Login</button>) : (
                 <div>
