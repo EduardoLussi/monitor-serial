@@ -1,0 +1,49 @@
+header {
+    height: 5vh;
+    background: #5d90cc;
+    color: white;
+    font-family: 'Century Gothic';
+    padding: 1vh 1vw;
+}
+
+header div.home {
+    display: flex;
+}
+
+header div.home img {
+    width: 2vw;
+    height: 2vw;
+    margin: auto 0;
+}
+
+header div.home h1 {
+    font-size: 1.1vw;
+    font-weight: lighter;
+    line-height: 5vh;
+    margin-left: 1vw;
+}
+
+header div.login {
+    margin: auto 0 auto auto;
+    text-align: right;
+}
+
+header div.login p.user {
+    font-size: 120%;
+}
+
+header div.login p.logout {
+    font-size: 90%;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+header button.login {
+    width: 5vw;
+    height: 4vh;
+    font-family: 'Century Gothic';
+    border: 1px solid black;
+    background: #b8d9ff;
+    font-size: 1vw;
+    cursor: pointer;
+}

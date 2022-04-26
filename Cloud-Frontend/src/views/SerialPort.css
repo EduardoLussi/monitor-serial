@@ -1,0 +1,30 @@
+li.SerialPort {
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    margin-bottom: 10%;
+}
+
+li.SerialPort div.SerialPort-content {
+    margin: 0 2%;
+}
+
+li.SerialPort div.sp-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+li.SerialPort div.sp-title>div {
+    display: flex;
+    width: 70%;
+}
+
+li.SerialPort div.sp-title h2 {
+    font-size: 110%;
+    font-weight: lighter;
+    margin: auto 0 auto 15%;
+}
+
+li.SerialPort div.sp-title p {
+    margin: auto 0 auto 0;
+}
+

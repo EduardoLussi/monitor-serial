@@ -1,0 +1,61 @@
+#include <Thread.h>
+#include <ThreadController.h>
+
+Thread fire_alarm1;
+Thread fire_alarm2;
+Thread rfid1;
+
+void setup() {
+ Serial.begin(115200);
+ fire_alarm1.onRun(send1);
+
+ fire_alarm2.onRun(send2);
+
+ rfid1.onRun(send3);
+
+ fire_alarm1.run();
+ fire_alarm2.run();
+ rfid1.run();
+}
+
+char a1[12] = {0x12, 0xAA, 0xA8, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31, '\r', '\n'};
+void send1() {
+  if (a1[6] == 0x36) {
+    a1[6] = 0x35;
+  } else if (a1[6] == 0x35) {
+    a1[6] = 0x34;
+  } else if (a1[6] == 0x34) {
+    a1[6] = 0x30;
+  } else {
+    a1[6] = 0x35;
+  }
+  Serial.print(a1);
+  delay(10);
+}
+
+char a2[12] = {0x12, 0xAB, 0xA8, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31, '\r', '\n'};
+void send2() {
+  if (a2[6] == 0x36) {
+    a2[6] = 0x35;
+  } else if (a2[6] == 0x35) {
+    a2[6] = 0x34;
+  } else if (a2[6] == 0x34) {
+    a2[6] = 0x30;
+  } else {
+    a2[6] = 0x35;
+  }
+  Serial.print(a2);
+  delay(100);
+}
+
+char a3[14] = {0x11, 0xAA, 0x88, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31, 0x39, '\r', '\n'};
+void send3() {
+  Serial.print(a3);
+  delay(1);
+}
+
+void loop() {
+  if (fire_alarm1.shouldRun()) fire_alarm1.run();
+  if (fire_alarm2.shouldRun()) fire_alarm2.run();
+  if (rfid1.shouldRun()) rfid1.run();
+}

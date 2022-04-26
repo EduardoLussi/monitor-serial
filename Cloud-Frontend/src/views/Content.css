@@ -1,0 +1,76 @@
+div.page-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+div.side-menu {
+    height: 100%;
+    width: 3%;
+    background: #1759a4;
+    position: absolute;
+}
+
+div.side-menu:hover {
+    width: 15%;
+}
+
+div.side-menu:hover ul li {
+    display: block;
+}
+
+div.side-menu-content {
+    padding: 5% 5%;
+    height: 87.5%;
+    overflow-y: auto;
+}
+
+div.side-menu:hover div.side-menu-content {
+    height: 85%;
+}
+
+div.side-menu-content button {
+    background: none;
+    padding: 5px;
+    border: none;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5%;
+    cursor: pointer;
+}
+
+div.side-menu:hover button {
+    text-align: right;
+}
+
+div.side-menu-content ul {
+    display: block;
+}
+
+div.side-menu-content ul li {
+    display: none;
+    border: none;
+    color: #F1F8FB;
+    text-decoration: none;
+    font-family: 'Century Gothic';
+    font-size: 125%;
+    padding: 7% 10%;
+    margin: 7% 0;
+}
+
+div.side-menu-content ul li:hover {
+    border-left: 1px solid white;
+    cursor: pointer;
+}
+
+div.side-menu div.release-button {
+    width: 100%;
+    height: 5vh;
+    background: #144c8c;
+    cursor: pointer;
+    text-align: center;
+}
+
+div.side-menu div.release-button img {
+    margin-top: 5px;
+}

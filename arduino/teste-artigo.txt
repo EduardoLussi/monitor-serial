@@ -1,0 +1,74 @@
+#include <Thread.h>
+#include <ThreadController.h>
+#include <TimerOne.h>
+
+#define NORMAL 49
+#define INCENDIO 10
+#define ATAQUE 0
+
+char a1[12] = {0x12, 0xAA, 0xA0, 0x37, 0x34, 0x32, 0x30, 0x39, 0x39, 0x31, '\r', '\n'};
+char a2[12] = {0x12, 0xAA, 0xA1, 0x37, 0x34, 0x32, 0x31, 0x39, 0x39, 0x31, '\r', '\n'};
+char a3[12] = {0x12, 0xAA, 0xA2, 0x37, 0x34, 0x32, 0x32, 0x39, 0x39, 0x31, '\r', '\n'};
+
+int i = 0;
+
+ThreadController sensores;
+Thread iot1;
+Thread iot2;
+Thread iot3;
+Thread block;
+
+void enviar1(){
+  Serial.write(a1, 12);
+  i++;
+  if (i == 3918) {
+    iot3.setInterval(ATAQUE);
+  } else if (i == 3612) {
+    iot1.setInterval(NORMAL);
+    iot2.setInterval(NORMAL);
+    iot3.setInterval(NORMAL);
+  } else if (i == 612) {
+    iot1.setInterval(INCENDIO);
+    iot2.setInterval(INCENDIO);
+    iot3.setInterval(INCENDIO);
+  }
+}
+void enviar2(){
+  Serial.write(a2, 12);  
+}
+void enviar3(){
+  Serial.write(a3, 12);  
+}
+
+void blockDevice() {
+  if (Serial.available() > 0) {
+    char in = Serial.read();
+    iot3.setInterval(30000);
+  }
+}
+
+void setup() {
+  Serial.begin(500000);
+
+  iot1.setInterval(NORMAL);
+  iot1.onRun(enviar1);
+  
+  iot2.setInterval(NORMAL);
+  iot2.onRun(enviar2);
+  
+  iot3.setInterval(NORMAL);
+  iot3.onRun(enviar3);
+
+  block.setInterval(1000);
+  block.onRun(blockDevice);
+
+  sensores.add(&iot1);
+  sensores.add(&iot2);
+  sensores.add(&iot3);
+  sensores.add(&block);
+
+}
+
+void loop() {
+  sensores.run();
+}

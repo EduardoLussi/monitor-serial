@@ -1,0 +1,19 @@
+li.fog-device {
+    margin: 3vh 0;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 5px;
+    padding: 1vh 1vw;
+}
+li.fog-device img {
+    width: 15%;
+}
+li.fog-device h2 {
+    font-weight: lighter;
+    margin: auto auto auto 10%;
+    font-size: 0.9vw;
+}
+li.fog-device p {
+    margin: auto 0;
+    font-size: 0.9vw;
+}

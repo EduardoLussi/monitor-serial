@@ -1,0 +1,106 @@
+char a1[12] = {0x12, 0xAA, 0xA0, 0x37, 0x34, 0x32, 0x30, 0x39, 0x39, 0x31, '\r', '\n'};
+char a2[12] = {0x12, 0xAA, 0xA1, 0x37, 0x34, 0x32, 0x31, 0x39, 0x39, 0x31, '\r', '\n'};
+char a3[12] = {0x12, 0xAA, 0xA2, 0x37, 0x34, 0x32, 0x32, 0x39, 0x39, 0x31, '\r', '\n'};
+char a4[12] = {0x12, 0xAA, 0xA3, 0x37, 0x34, 0x32, 0x33, 0x39, 0x39, 0x31, '\r', '\n'};
+char a5[12] = {0x12, 0xAA, 0xA4, 0x37, 0x34, 0x32, 0x34, 0x39, 0x39, 0x31, '\r', '\n'};
+char a6[12] = {0x12, 0xAA, 0xA5, 0x37, 0x34, 0x32, 0x35, 0x39, 0x39, 0x31, '\r', '\n'};
+char a7[12] = {0x12, 0xAA, 0xA6, 0x37, 0x34, 0x32, 0x36, 0x39, 0x39, 0x31, '\r', '\n'};
+char a8[12] = {0x12, 0xAA, 0xA7, 0x37, 0x34, 0x32, 0x37, 0x39, 0x39, 0x31, '\r', '\n'};
+char a9[12] = {0x12, 0xAA, 0xA8, 0x37, 0x34, 0x32, 0x38, 0x39, 0x39, 0x31, '\r', '\n'};
+char a10[12] = {0x12, 0xAA, 0xA9, 0x37, 0x34, 0x32, 0x39, 0x39, 0x39, 0x31, '\r', '\n'};
+
+#include <Thread.h>
+#include <ThreadController.h>
+
+ThreadController sensores;
+Thread iot1;
+Thread iot2;
+Thread iot3;
+Thread iot4;
+Thread iot5;
+Thread iot6;
+Thread iot7;
+Thread iot8;
+Thread iot9;
+Thread iot10;
+
+void setup() {
+  Serial.begin(115200);
+
+  iot1.setInterval(33);
+  iot1.onRun(enviar1);
+  
+  iot2.setInterval(33);
+  iot2.onRun(enviar2);
+  
+  iot3.setInterval(33);
+  iot3.onRun(enviar3);
+  
+  iot4.setInterval(33);
+  iot4.onRun(enviar4);
+  
+  iot5.setInterval(33);
+  iot5.onRun(enviar5);
+  
+  iot6.setInterval(33);
+  iot6.onRun(enviar6);
+  
+  iot7.setInterval(33);
+  iot7.onRun(enviar7);
+  
+  iot8.setInterval(33);
+  iot8.onRun(enviar8);
+  
+  iot9.setInterval(33);
+  iot9.onRun(enviar9);
+  
+  iot10.setInterval(33);
+  iot10.onRun(enviar10);
+
+  sensores.add(&iot1);
+  sensores.add(&iot2);
+  sensores.add(&iot3);
+  sensores.add(&iot4);
+  sensores.add(&iot5);
+  sensores.add(&iot6);
+  sensores.add(&iot7);
+  sensores.add(&iot8);
+  sensores.add(&iot9);
+  sensores.add(&iot10);
+
+}
+
+void loop() {
+  sensores.run();
+}
+
+void enviar1(){
+  Serial.print(a1);  
+}
+void enviar2(){
+  Serial.print(a2);  
+}
+void enviar3(){
+  Serial.print(a3);  
+}
+void enviar4(){
+  Serial.print(a4);  
+}
+void enviar5(){
+  Serial.print(a5);  
+}
+void enviar6(){
+  Serial.print(a6);  
+}
+void enviar7(){
+  Serial.print(a7);  
+}
+void enviar8(){
+  Serial.print(a8);  
+}
+void enviar9(){
+  Serial.print(a9);  
+}
+void enviar10(){
+  Serial.print(a10);  
+}
